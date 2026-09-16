@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vi tích phân 1C · Phần 2: Dãy số thực</title>
+    
+    <!-- MathJax 3: hiển thị công thức toán trong bài giảng -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --border: #cbd5e1;
+            --highlight-bg: #eff6ff;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            /* Font chữ PowerPoint chuẩn hỗ trợ 100% tiếng Việt */
+            font-family: 'Segoe UI', Arial, Calibri, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #f59e0b);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Viewport */
+        .deck-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 88vh;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px 50px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .slide.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Headers & Typography */
+        .slide-header {
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 14px;
+            margin-bottom: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-title {
+            color: var(--primary);
+            font-size: 32px; /* Tăng từ 26px lên 32px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-category {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        /* Content Boxes */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+            font-size: 18px; /* Tăng kích thước chữ tổng thể */
+            line-height: 1.6;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 20px; /* Tăng từ 16px lên 20px */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .box-realworld {
+            background-color: var(--highlight-bg);
+            border-left: 5px solid var(--primary-light);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-math {
+            background-color: var(--success-bg);
+            border-left: 5px solid var(--success-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-warning {
+            background-color: var(--danger-bg);
+            border-left: 5px solid var(--danger-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Lists & Tables */
+        ul, ol { margin-top: 8px; padding-left: 26px; }
+        li { margin-bottom: 10px; font-size: 18px; line-height: 1.6; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 17px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            text-align: center;
+        }
+        th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
+
+        /* Phóng to công thức toán inline */
+        mjx-container {
+            font-size: 105% !important;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background-color: #1e293b;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background-color: var(--primary); }
+        .nav-btn:disabled { background-color: #475569; cursor: not-allowed; }
+
+        .slide-counter { font-size: 17px; font-weight: 700; }
+    
+        .deck-container { min-height: 0; padding: 12px 20px; overflow: hidden; }
+        .slide { height: 100%; max-height: 100%; padding: 26px 38px; }
+        .slide-header { gap: 15px; margin-bottom: 18px; }
+        .slide-title { font-size: 29px; }
+        .slide-category { flex-shrink: 0; }
+        .card, .box-math, .box-realworld, .box-warning { padding: 15px 18px; }
+        .card p { margin: 8px 0; }
+        .book-figure, .diagram { margin: 0 0 16px; padding: 14px; background: white; border: 1px solid var(--border); border-radius: 12px; }
+        .book-figure img { display: block; max-width: 100%; max-height: 320px; width: auto; margin: auto; object-fit: contain; }
+        .mapping-figure img { max-height: 385px; }
+        figcaption, .source-note { color: #475569; font-size: 13px; line-height: 1.5; margin-top: 10px; }
+        .diagram svg { display: block; width: 100%; max-height: 280px; }
+        .prompt { padding: 12px 18px; background: #fff7ed; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 18px; }
+        .switches { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+        .switches button { border: 1px solid #93c5fd; border-radius: 8px; padding: 9px 12px; color: #1e3a8a; background: #eff6ff; cursor: pointer; font: inherit; }
+        .switches button[aria-pressed="true"] { color: white; background: #1d4ed8; }
+        button:focus-visible, a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        .nav-bar { gap: 12px; padding: 12px 24px; flex-shrink: 0; }
+        .progress-container { flex-shrink: 0; }
+        .slide-counter select { max-width: 260px; font: inherit; padding: 5px; border-radius: 4px; }
+        mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+        @media(max-width: 760px) { .grid-2 { grid-template-columns: 1fr; gap: 8px; } .slide { padding: 18px; } .deck-container { padding: 8px; } .slide-header { flex-wrap: wrap; } .slide-title { font-size: 24px; } .nav-btn { padding: 9px; font-size: 14px; } .slide-counter select { max-width: 135px; font-size: 13px; } .card, li, .box-math, .box-realworld, .box-warning { font-size: 17px; } }
+        @media print { body { height: auto; overflow: visible; background: white; } .slide { display: block !important; height: auto; max-height: none; break-after: page; overflow: visible; box-shadow: none; } .deck-container { display: block; overflow: visible; } .nav-bar,.progress-container,.switches { display: none; } }
+input[type="range"] { width: min(100%, 340px); accent-color: #2563eb; vertical-align: middle; } .source-note { margin-bottom: 8px; }
+
+        .home-link { color: white; font-size: 14px; white-space: nowrap; }
+        .screen-status:empty { display: none; }
+        .screen-status { position: fixed; bottom: 90px; left: 20px; right: 20px; z-index: 20; padding: 14px; background: #fff7ed; color: #7c2d12; border: 1px solid #fdba74; border-radius: 8px; }
+        :fullscreen { background: #0f172a; }
+        .nav-bar { flex-wrap: wrap; }
+        #fullscreenBtn { font-size: 14px; padding: 10px 12px; }
+        @media(max-width: 760px) { .nav-bar { padding: 8px; gap: 8px; } .home-link { order: 4; } #fullscreenBtn { order: 5; margin-left: auto; } .slide-counter { flex: 1; text-align: center; } }
+        @media print { .screen-status { display: none; } }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="deck-container">
+
+<div class="slide active"><div class="slide-header"><h2 class="slide-title">DÃY SỐ THỰC</h2><span class="slide-category">Vi tích phân 1C · Phần 2</span></div><div class="card"><h1>Từ các số hạng đến giới hạn</h1><ul><li>Phân biệt dãy số và tập giá trị; đọc đồ thị dãy số.</li><li>Hiểu hội tụ bằng định nghĩa ε–N và vận dụng các định lý.</li><li>Chứng minh đơn điệu, bị chặn; xử lý dãy truy hồi.</li></ul></div><div class="box-math">Lộ trình: dãy số → hội tụ → tính chất giới hạn → đơn điệu → số e → dãy truy hồi.</div><div class="prompt">Ôn trước: cận trên, cận dưới, sup/inf; bất đẳng thức tam giác và quy nạp.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy số và tập giá trị</h2><span class="slide-category">Khái niệm</span></div><div class="card">Một dãy số thực gán cho mỗi số nguyên $n\ge n_0$ một số thực $a_n$. Viết $(a_n)_{n\ge n_0}$.<p>Ví dụ $a_n=1/n$, $n\ge1$: $1,1/2,1/3,\ldots$.</p></div><div class="grid-2"><div class="card"><strong>Dãy số có chỉ số và thứ tự.</strong><p>$a_n=(-1)^n$: $-1,1,-1,1,\ldots$.</p></div><div class="card"><strong>Tập giá trị không ghi thứ tự, số lần lặp.</strong><p>$\{a_n:n\ge1\}=\{-1,1\}$.</p></div></div><div class="prompt">Công thức có $1/n$ phải bắt đầu từ $n\ge1$, không lấy $n=0$.</div><p class="source-note">Giáo trình: Định nghĩa 1.1.15, Ví dụ 1.1.16–1.1.17.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đọc một đồ thị dãy số</h2><span class="slide-category">Minh họa</span></div><div class="card">$a_n=\dfrac{n}{n+1}=1-\dfrac1{n+1}$, $n\ge1$. Mỗi điểm có tọa độ $(n,a_n)$.</div><figure class="diagram"><svg viewBox="0 0 900 280" role="img" aria-label="Dãy n/(n+1) tiến gần đường y = 1"><rect width="900" height="280" fill="white"/><path d="M65 25 V230 H850" fill="none" stroke="#64748b" stroke-width="2"/><text x="55" y="211.4" text-anchor="end" font-size="16">0.00</text><text x="55" y="140.0" text-anchor="end" font-size="16">0.55</text><text x="55" y="68.6" text-anchor="end" font-size="16">1.10</text><line x1="65" x2="845" y1="76.6" y2="76.6" stroke="#d97706" stroke-width="2" stroke-dasharray="8 5"/><text x="850" y="81.6" fill="#92400e" font-size="16">L</text><circle cx="65.0" cy="141.5" r="4.5" fill="#2563eb"/><circle cx="96.7" cy="119.8" r="4.5" fill="#2563eb"/><circle cx="128.3" cy="109.0" r="4.5" fill="#2563eb"/><circle cx="160.0" cy="102.5" r="4.5" fill="#2563eb"/><circle cx="191.7" cy="98.2" r="4.5" fill="#2563eb"/><circle cx="223.3" cy="95.1" r="4.5" fill="#2563eb"/><circle cx="255.0" cy="92.8" r="4.5" fill="#2563eb"/><circle cx="286.7" cy="91.0" r="4.5" fill="#2563eb"/><circle cx="318.3" cy="89.5" r="4.5" fill="#2563eb"/><circle cx="350.0" cy="88.4" r="4.5" fill="#2563eb"/><circle cx="381.7" cy="87.4" r="4.5" fill="#2563eb"/><circle cx="413.3" cy="86.5" r="4.5" fill="#2563eb"/><circle cx="445.0" cy="85.8" r="4.5" fill="#2563eb"/><circle cx="476.7" cy="85.2" r="4.5" fill="#2563eb"/><circle cx="508.3" cy="84.7" r="4.5" fill="#2563eb"/><circle cx="540.0" cy="84.2" r="4.5" fill="#2563eb"/><circle cx="571.7" cy="83.8" r="4.5" fill="#2563eb"/><circle cx="603.3" cy="83.4" r="4.5" fill="#2563eb"/><circle cx="635.0" cy="83.1" r="4.5" fill="#2563eb"/><circle cx="666.7" cy="82.7" r="4.5" fill="#2563eb"/><circle cx="698.3" cy="82.5" r="4.5" fill="#2563eb"/><circle cx="730.0" cy="82.2" r="4.5" fill="#2563eb"/><circle cx="761.7" cy="82.0" r="4.5" fill="#2563eb"/><circle cx="793.3" cy="81.8" r="4.5" fill="#2563eb"/><circle cx="825.0" cy="81.6" r="4.5" fill="#2563eb"/><text x="65.0" y="255" text-anchor="middle" font-size="16">1</text><text x="413.3" y="255" text-anchor="middle" font-size="16">12</text><text x="825.0" y="255" text-anchor="middle" font-size="16">25</text><text x="855" y="250" font-size="20">n</text><text x="22" y="25" font-size="20">aₙ</text></svg><figcaption>Dãy n/(n+1) tiến gần đường y = 1 · Các điểm biểu diễn số hạng; không nối thành đường liên tục.</figcaption></figure><div class="prompt">Dãy có số hạng nào bằng 1 không? Giới hạn có nhất thiết là một số hạng của dãy?</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy bị chặn và các phép toán</h2><span class="slide-category">Khái niệm</span></div><div class="grid-2"><div class="card"><strong>Bị chặn trên:</strong> có $M\in\mathbb R$ sao cho $a_n\le M$ với mọi $n$.<p><strong>Bị chặn dưới:</strong> có $m\in\mathbb R$ sao cho $m\le a_n$ với mọi $n$.</p></div><div class="card"><strong>Bị chặn:</strong> có $K&gt;0$ sao cho $|a_n|\le K$ với mọi $n$.<p>$(-1)^n$ bị chặn; $n$ không bị chặn trên.</p></div></div><div class="box-math">Tổng, hiệu, tích được định nghĩa theo từng chỉ số: $a_n+b_n$, $a_n-b_n$, $a_nb_n$. Thương $a_n/b_n$ đòi hỏi $b_n\ne0$ tại các chỉ số đang xét.</div><div class="prompt">Dãy bị chặn có nhất thiết hội tụ không? Hãy giữ câu hỏi này để kiểm tra sau.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hội tụ: ở trong dải ε từ một lúc trở đi</h2><span class="slide-category">Định nghĩa</span></div><div class="box-math">$$a_n\to L\iff \forall\varepsilon&gt;0,\ \exists N\ge n_0,\ \forall n\ge N:\ |a_n-L|&lt;\varepsilon.$$</div><div class="card"><ol><li>Cho trước độ chính xác $\varepsilon&gt;0$ bất kỳ.</li><li>Chọn một chỉ số $N$ phụ thuộc vào $\varepsilon$.</li><li><strong>Mọi</strong> số hạng từ $N$ trở đi phải nằm trong $(L-\varepsilon,L+\varepsilon)$.</li></ol></div><div class="prompt">Không đủ nếu chỉ có một số hạng gần L, hoặc chỉ kiểm tra vài số hạng đầu.</div><p class="source-note">Giáo trình: Định nghĩa 1.1.21. Giới hạn hội tụ L phải là một số thực.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Thay đổi ε và quan sát ngưỡng N</h2><span class="slide-category">Khám phá</span></div><div class="switches"><button data-sequence="reciprocal" aria-pressed="true">aₙ = 1/n</button><button data-sequence="alternating" aria-pressed="false">aₙ = (−1)ⁿ/n</button><button data-sequence="oscillating" aria-pressed="false">aₙ = (−1)ⁿ</button></div><div class="card"><label for="epsilon">ε = <output id="epsValue">0,20</output></label> <input id="epsilon" type="range" min="0.05" max="0.8" step="0.05" value="0.2" aria-label="Độ rộng epsilon"></div><figure class="diagram"><svg id="epsilonPlot" viewBox="0 0 900 300" role="img" aria-label="Đồ thị 40 số hạng đầu và dải epsilon quanh 0"></svg><figcaption>40 số hạng đầu; đường đứt đứng đánh dấu một ngưỡng N hợp lệ khi có.</figcaption></figure><div class="box-math" id="epsilonResult" aria-live="polite"></div><p class="source-note">Đồ thị gợi ý; công thức |aₙ| = 1/n mới bảo đảm kết quả cho mọi n ≥ N.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh giới hạn bằng định nghĩa</h2><span class="slide-category">Ví dụ</span></div><div class="grid-2"><div class="card"><strong>$1/n\to0$</strong><p>Cho $\varepsilon&gt;0$. Chọn số nguyên $N&gt;1/\varepsilon$.</p><p>Với mọi $n\ge N$:</p>$$\left|\frac1n-0\right|=\frac1n\le\frac1N&lt;\varepsilon.$$</div><div class="card"><strong>$n/(n+1)\to1$</strong><p>Cho $\varepsilon&gt;0$. Chọn số nguyên $N&gt;1/\varepsilon$.</p><p>Với mọi $n\ge N$:</p>$$\left|\frac n{n+1}-1\right|=\frac1{n+1}&lt;\frac1N&lt;\varepsilon.$$</div></div><div class="prompt">Chọn N đủ lớn là được; không bắt buộc tìm N nhỏ nhất.</div><p class="source-note">Giáo trình: Ví dụ 1.1.23–1.1.24.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đổi dấu không đồng nghĩa với phân kỳ</h2><span class="slide-category">Ví dụ</span></div><div class="card">$a_n=(-1)^n/n$ thỏa $|a_n|=1/n$. Với $N&gt;1/\varepsilon$, mọi $n\ge N$ đều có $|a_n|&lt;\varepsilon$. Vậy $a_n\to0$.</div><figure class="diagram"><svg viewBox="0 0 900 280" role="img" aria-label="Dãy đổi dấu nhưng biên độ giảm về 0"><rect width="900" height="280" fill="white"/><path d="M65 25 V230 H850" fill="none" stroke="#64748b" stroke-width="2"/><text x="55" y="211.4" text-anchor="end" font-size="16">-1.00</text><text x="55" y="140.0" text-anchor="end" font-size="16">0.00</text><text x="55" y="68.6" text-anchor="end" font-size="16">1.00</text><line x1="65" x2="845" y1="135.0" y2="135.0" stroke="#d97706" stroke-width="2" stroke-dasharray="8 5"/><text x="850" y="140.0" fill="#92400e" font-size="16">L</text><circle cx="65.0" cy="206.4" r="4.5" fill="#2563eb"/><circle cx="96.7" cy="99.3" r="4.5" fill="#2563eb"/><circle cx="128.3" cy="158.8" r="4.5" fill="#2563eb"/><circle cx="160.0" cy="117.1" r="4.5" fill="#2563eb"/><circle cx="191.7" cy="149.3" r="4.5" fill="#2563eb"/><circle cx="223.3" cy="123.1" r="4.5" fill="#2563eb"/><circle cx="255.0" cy="145.2" r="4.5" fill="#2563eb"/><circle cx="286.7" cy="126.1" r="4.5" fill="#2563eb"/><circle cx="318.3" cy="142.9" r="4.5" fill="#2563eb"/><circle cx="350.0" cy="127.9" r="4.5" fill="#2563eb"/><circle cx="381.7" cy="141.5" r="4.5" fill="#2563eb"/><circle cx="413.3" cy="129.0" r="4.5" fill="#2563eb"/><circle cx="445.0" cy="140.5" r="4.5" fill="#2563eb"/><circle cx="476.7" cy="129.9" r="4.5" fill="#2563eb"/><circle cx="508.3" cy="139.8" r="4.5" fill="#2563eb"/><circle cx="540.0" cy="130.5" r="4.5" fill="#2563eb"/><circle cx="571.7" cy="139.2" r="4.5" fill="#2563eb"/><circle cx="603.3" cy="131.0" r="4.5" fill="#2563eb"/><circle cx="635.0" cy="138.8" r="4.5" fill="#2563eb"/><circle cx="666.7" cy="131.4" r="4.5" fill="#2563eb"/><circle cx="698.3" cy="138.4" r="4.5" fill="#2563eb"/><circle cx="730.0" cy="131.8" r="4.5" fill="#2563eb"/><circle cx="761.7" cy="138.1" r="4.5" fill="#2563eb"/><circle cx="793.3" cy="132.0" r="4.5" fill="#2563eb"/><circle cx="825.0" cy="137.9" r="4.5" fill="#2563eb"/><text x="65.0" y="255" text-anchor="middle" font-size="16">1</text><text x="413.3" y="255" text-anchor="middle" font-size="16">12</text><text x="825.0" y="255" text-anchor="middle" font-size="16">25</text><text x="855" y="250" font-size="20">n</text><text x="22" y="25" font-size="20">aₙ</text></svg><figcaption>Dãy đổi dấu nhưng biên độ giảm về 0 · Các điểm biểu diễn số hạng; không nối thành đường liên tục.</figcaption></figure><div class="prompt">Dãy hội tụ không bắt buộc đơn điệu; cũng không bắt buộc luôn ở cùng một phía của giới hạn.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Vì sao (−1)ⁿ không hội tụ?</h2><span class="slide-category">Phân kỳ</span></div><div class="card">Giả sử $a_n=(-1)^n\to L$. Chọn $\varepsilon=1/2$. Khi đủ xa, chọn một chỉ số chẵn $p$ và một chỉ số lẻ $q$ đều lớn hơn ngưỡng $N$.</div><div class="box-math">Khi đó $|1-L|&lt;1/2$ và $|-1-L|&lt;1/2$. Nhưng $$2=|1-(-1)|\le|1-L|+|L+1|&lt;1,$$ mâu thuẫn.</div><div class="card">Vậy dãy phân kỳ dù bị chặn trong [−1, 1]. Hai giá trị 1 và −1 tiếp tục xuất hiện ở những chỉ số lớn tùy ý.</div><div class="prompt">Hội tụ ⇒ bị chặn, nhưng chiều đảo không đúng.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn của dãy là duy nhất</h2><span class="slide-category">Chứng minh</span></div><div class="card">Giả sử $a_n\to L$ và $a_n\to M$, với $L\ne M$. Đặt $\varepsilon=|L-M|/3&gt;0$.</div><div class="box-math">Có $N_1,N_2$ sao cho với $n\ge\max\{N_1,N_2\}$: $$|a_n-L|&lt;\varepsilon,\qquad|a_n-M|&lt;\varepsilon.$$ Bất đẳng thức tam giác cho $$|L-M|\le|L-a_n|+|a_n-M|&lt;2\varepsilon=\frac23|L-M|,$$ mâu thuẫn. Vậy $L=M$.</div><p class="source-note">Giáo trình: Bài 1.1.16.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy hội tụ thì bị chặn</h2><span class="slide-category">Chứng minh</span></div><div class="card">Giả sử $a_n\to L$. Với $\varepsilon=1$, có $N\ge2$ sao cho $n\ge N\Rightarrow |a_n-L|&lt;1$.</div><div class="box-math">Với $n\ge N$: $|a_n|\le|a_n-L|+|L|&lt;1+|L|$.<p>Đặt</p>$$K=\max\{|a_1|,\ldots,|a_{N-1}|,1+|L|\}.$$ Khi đó $|a_n|\le K$ với <strong>mọi</strong> $n\ge1$.</div><div class="prompt">Phần đuôi được khống chế bởi hội tụ; hữu hạn số hạng đầu được khống chế bằng một giá trị lớn nhất.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Bảo toàn thứ tự khi lấy giới hạn</h2><span class="slide-category">Định lý và chứng minh</span></div><div class="card">Giả sử $a_n\le b_n$ từ một chỉ số trở đi, $a_n\to a$, $b_n\to b$. Khi đó $a\le b$.</div><div class="box-math">Giả sử ngược lại $a&gt;b$. Đặt $\varepsilon=(a-b)/2$. Với $n$ đủ lớn, $$a_n&gt;a-\varepsilon=\frac{a+b}{2},\qquad b_n&lt;b+\varepsilon=\frac{a+b}{2}.$$ Suy ra $a_n&gt;b_n$, mâu thuẫn.</div><div class="prompt">Dấu nghiêm có thể mất: $0&lt;1/n$ với mọi $n$, nhưng cả hai dãy đều có giới hạn 0.</div><p class="source-note">Giáo trình: Mệnh đề 1.1.27.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Định lý giới hạn kẹp</h2><span class="slide-category">Định lý và chứng minh</span></div><div class="card">Nếu $a_n\le b_n\le c_n$ từ một chỉ số trở đi và $a_n\to L$, $c_n\to L$, thì $b_n\to L$.</div><div class="box-math">Cho $\varepsilon&gt;0$. Với $n$ đủ lớn: $$L-\varepsilon&lt;a_n\le b_n\le c_n&lt;L+\varepsilon.$$ Do đó $|b_n-L|&lt;\varepsilon$.</div><div class="grid-2"><div class="card"><strong>Ví dụ:</strong> $-1/n\le\sin n/n\le1/n$, nên $\sin n/n\to0$.</div><div class="card"><strong>Ví dụ:</strong> $0&lt;1/(n^2+1)\le1/n^2$, nên $1/(n^2+1)\to0$.</div></div><p class="source-note">Giáo trình: Mệnh đề 1.1.28, Ví dụ 1.1.29; Bài 6.1.13(a).</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn của tổng, hiệu, tích, thương</h2><span class="slide-category">Quy tắc</span></div><div class="card">Cho $a_n\to a$ và $b_n\to b$ (giới hạn hữu hạn).<p>$a_n+b_n\to a+b$; $a_n-b_n\to a-b$.</p><p>$a_nb_n\to ab$.</p><p>Nếu $b\ne0$, thì $a_n/b_n\to a/b$ trên phần đuôi có $b_n\ne0$.</p></div><div class="box-math">Vì $b_n\to b\ne0$, với $n$ đủ lớn ta có $|b_n|&gt;|b|/2&gt;0$. Điều kiện mẫu khác 0 được bảo đảm ở phần đuôi.</div><div class="prompt">Không áp dụng quy tắc thương khi giới hạn mẫu bằng 0. Dạng “0/0” chưa cho biết giới hạn.</div><p class="source-note">Giáo trình: Mệnh đề 1.1.25.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh quy tắc tổng và hiệu</h2><span class="slide-category">Chia sai số</span></div><div class="card">Cho $\varepsilon&gt;0$. Chọn $N$ đủ lớn để đồng thời $|a_n-a|&lt;\varepsilon/2$ và $|b_n-b|&lt;\varepsilon/2$ với mọi $n\ge N$.</div><div class="box-math">$$|(a_n+b_n)-(a+b)|\le|a_n-a|+|b_n-b|&lt;\varepsilon.$$ Vậy $a_n+b_n\to a+b$.<p>Với hiệu, dùng cùng cách chọn $N$:</p>$$|(a_n-b_n)-(a-b)|\le|a_n-a|+|b_n-b|&lt;\varepsilon.$$</div><div class="prompt">Ý tưởng: chia tổng sai số thành những phần nhỏ hơn rồi khống chế từng phần.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh quy tắc tích</h2><span class="slide-category">Ước lượng</span></div><div class="card">Vì $(b_n)$ hội tụ nên có $K\ge1$ sao cho $|b_n|\le K$ với mọi $n$.</div><div class="box-math">$$|a_nb_n-ab|=|(a_n-a)b_n+a(b_n-b)|\le K|a_n-a|+|a|\,|b_n-b|.$$ Cho $\varepsilon&gt;0$, chọn $N$ để với mọi $n\ge N$: $$|a_n-a|&lt;\frac\varepsilon{2K},\qquad |b_n-b|&lt;\frac\varepsilon{2(|a|+1)}.$$ Khi đó $|a_nb_n-ab|&lt;\varepsilon/2+\varepsilon/2=\varepsilon$.</div><div class="prompt">Việc thêm 1 vào |a| giúp công thức chọn ngưỡng vẫn đúng khi a = 0.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh quy tắc nghịch đảo</h2><span class="slide-category">Mẫu khác 0</span></div><div class="card">Giả sử $b_n\to b\ne0$. Với $n$ đủ lớn, $|b_n-b|&lt;|b|/2$, nên $|b_n|&gt;|b|/2$.</div><div class="box-math">$$\left|\frac1{b_n}-\frac1b\right|=\frac{|b_n-b|}{|b_n|\,|b|}\le\frac{2|b_n-b|}{|b|^2}.$$ Cho $\varepsilon&gt;0$, chọn $N$ để vừa có $|b_n|&gt;|b|/2$ vừa có $|b_n-b|&lt;\varepsilon|b|^2/2$. Khi đó sai số nhỏ hơn $\varepsilon$.</div><div class="card">Vậy $1/b_n\to1/b$. Kết hợp với quy tắc tích: $a_n/b_n=a_n(1/b_n)\to a/b$.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Tính giới hạn: biến đổi trước khi áp dụng</h2><span class="slide-category">Ví dụ</span></div><div class="grid-2"><div class="card"><strong>Phân thức theo n</strong>$$\frac{3n^2-n+3}{n^2+3n+2}=\frac{3-1/n+3/n^2}{1+3/n+2/n^2}\longrightarrow3.$$</div><div class="card"><strong>Nhân liên hợp</strong>$$\sqrt{n^2+n}-n=\frac{n}{\sqrt{n^2+n}+n}$$ $$=\frac1{\sqrt{1+1/n}+1}\longrightarrow\frac12.$$</div></div><p class="source-note">Ở ví dụ căn: $0\le\sqrt{1+1/n}-1=\frac{1/n}{\sqrt{1+1/n}+1}\le1/(2n)$, nên căn tiến về 1 bằng định lý kẹp.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy tăng, dãy giảm</h2><span class="slide-category">Đơn điệu</span></div><div class="grid-2"><div class="card"><strong>Tăng:</strong> $a_{n+1}\ge a_n$ với mọi $n$.<p><strong>Giảm:</strong> $a_{n+1}\le a_n$ với mọi $n$.</p><p>Cho phép dấu bằng. Nếu bất đẳng thức luôn nghiêm, nói tăng/giảm nghiêm ngặt.</p></div><div class="card"><strong>Cách kiểm tra</strong><ul><li>Tính hiệu $a_{n+1}-a_n$.</li><li>Với dãy dương, có thể xét tỉ số $a_{n+1}/a_n$.</li><li>Dãy truy hồi: thường cần quy nạp.</li></ul></div></div><div class="box-math">Với $a_n=n/(n+1)$: $$a_{n+1}-a_n=\frac1{(n+1)(n+2)}&gt;0.$$</div><div class="prompt">Dãy tăng chưa chắc hội tụ: aₙ = n tăng và không bị chặn trên.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đơn điệu và bị chặn ⇒ hội tụ</h2><span class="slide-category">Chứng minh bằng sup</span></div><div class="card">Giả sử $(a_n)$ tăng và bị chặn trên. Đặt $L=\sup\{a_n:n\ge1\}$.</div><div class="box-math">Với $\varepsilon&gt;0$, $L-\varepsilon$ không thể là cận trên. Do đó tồn tại $N$ sao cho $a_N&gt;L-\varepsilon$.<p>Vì dãy tăng, mọi $n\ge N$ đều thỏa</p>$$L-\varepsilon&lt;a_N\le a_n\le L.$$ Suy ra $|a_n-L|&lt;\varepsilon$. Vậy $a_n\to L$.</div><div class="card">Tương tự: dãy giảm và bị chặn dưới hội tụ về $\inf\{a_n:n\ge1\}$.</div><div class="prompt">Đây là chỗ kiến thức sup/inf ở phần 1 được dùng để chứng minh sự tồn tại giới hạn.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Số e được kẹp giữa hai dãy</h2><span class="slide-category">Hằng số Népère</span></div><div class="card">Với $n\ge1$, đặt $$u_n=\left(1+\frac1n\right)^n,\qquad v_n=\left(1+\frac1n\right)^{n+1}.$$ Dãy $(u_n)$ tăng, $(v_n)$ giảm và $u_n&lt;v_n$.</div><div class="box-math">$2=u_1\le u_n&lt;v_n\le v_1=4$. Hai dãy đều hội tụ. Mặt khác $$v_n-u_n=\frac{u_n}{n}\le\frac4n\to0.$$ Vì thế chúng có cùng giới hạn, ký hiệu là $e\approx2{,}71828$.</div><div class="prompt">Các trang tiếp theo minh họa sự kẹp và chứng minh tính đơn điệu của hai dãy.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Quan sát hai phía của số e</h2><span class="slide-category">Minh họa</span></div><div class="card"><label for="eIndex">Chọn n: <output id="eN">10</output></label> <input id="eIndex" type="range" min="1" max="100" value="10"><table><thead><tr><th>uₙ (cận dưới)</th><th>e ≈</th><th>vₙ (cận trên)</th></tr></thead><tbody><tr><td id="eLower"></td><td>2,71828183</td><td id="eUpper"></td></tr></tbody></table><p id="eGap" aria-live="polite"></p></div><div class="box-math">Với mọi $n\ge1$: $u_n&lt;e&lt;v_n$; khoảng kẹp thu hẹp dần.<p>Sai số khi dùng $u_n$ xấp xỉ $e$ nhỏ hơn $v_n-u_n=u_n/n$.</p></div><p class="source-note">Các số hiển thị là giá trị làm tròn; bất đẳng thức được hiểu với giá trị chính xác.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Vì sao hai dãy xác định e đơn điệu?</h2><span class="slide-category">Đọc kỹ chứng minh</span></div><div class="card"><strong>Dùng AM–GM:</strong> với $m$ số dương $x_1,\ldots,x_m$, tích không vượt quá lũy thừa bậc $m$ của trung bình cộng; dấu bằng chỉ khi các số bằng nhau.</div><div class="grid-2"><div class="box-math"><strong>$u_n$ tăng</strong><p>Lấy $n$ số bằng $(n+1)/n$ và một số bằng 1. AM–GM cho</p>$$u_n&lt;\left(\frac{n+2}{n+1}\right)^{n+1}=u_{n+1}.$$</div><div class="box-math"><strong>$v_n$ giảm</strong><p>Lấy $n+1$ số bằng $n/(n+1)$ và một số bằng 1. Khi đó</p>$$\frac1{v_n}&lt;\left(\frac{n+1}{n+2}\right)^{n+2}=\frac1{v_{n+1}}.$$ Suy ra $v_n&gt;v_{n+1}$.</div></div><p class="source-note">Có thể đọc thêm sau buổi học. Chứng minh dùng bất đẳng thức trung bình cộng–trung bình nhân.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Một số thập phân tuần hoàn</h2><span class="slide-category">Ví dụ đơn điệu</span></div><div class="card">$a_n=1,\underbrace{55\ldots5}_{n\text{ chữ số }5}$, $n\ge1$; chẳng hạn $a_1=1{,}5$, $a_2=1{,}55$.</div><div class="box-math">$a_{n+1}-a_n=5\cdot10^{-(n+1)}&gt;0$, và $a_n&lt;2$. Do đó dãy hội tụ.<p>Hệ thức truy hồi:</p>$$a_{n+1}=\frac{a_n}{10}+\frac75.$$ Gọi giới hạn là $L$: $L=L/10+7/5$, nên $L=14/9$.</div><div class="card">Kiểm tra bằng tổng hữu hạn: $$a_n=1+5\sum_{k=1}^n10^{-k}=\frac{14}{9}-\frac59\,10^{-n}\longrightarrow\frac{14}{9}.$$</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy truy hồi: thứ tự lập luận</h2><span class="slide-category">Phương pháp</span></div><div class="card">Với $a_{n+1}=f(a_n)$:<ol><li>Tính vài số hạng để dự đoán, kiểm tra biểu thức có nghĩa.</li><li>Chứng minh một khoảng chứa mọi $a_n$ bằng quy nạp.</li><li>Chứng minh đơn điệu, hoặc tìm lập luận hội tụ khác.</li><li><strong>Sau khi biết dãy hội tụ</strong>, lấy giới hạn để tìm $L$.</li><li>Dùng khoảng đã chứng minh để chọn nghiệm phù hợp.</li></ol></div><div class="prompt">Giải $L=f(L)$ chỉ cho ứng viên. Ví dụ $a_1=0$, $a_{n+1}=1-a_n$ có ứng viên $L=1/2$, nhưng dãy $0,1,0,1,\ldots$ không hội tụ.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy căn lồng nhau: tăng và bị chặn</h2><span class="slide-category">Ví dụ truy hồi</span></div><div class="card">$a_1=\sqrt2$, $a_{n+1}=\sqrt{2+a_n}$ với $n\ge1$.</div><div class="grid-2"><div class="box-math"><strong>Bị chặn:</strong> $0&lt;a_1&lt;2$. Nếu $0&lt;a_n&lt;2$, thì $0&lt;a_{n+1}=\sqrt{2+a_n}&lt;2$.</div><div class="box-math"><strong>Tăng:</strong> $a_2&gt;a_1$. Nếu $a_n&gt;a_{n-1}$, tính tăng của căn bậc hai cho $a_{n+1}&gt;a_n$.</div></div><div class="card">Vậy dãy hội tụ về $L\in[\sqrt2,2]$. Từ $a_{n+1}^2=2+a_n$, lấy giới hạn: $L^2=L+2$. Hai nghiệm là $2,-1$; chọn $L=2$.</div><p class="source-note">Giáo trình: Bài 6.1.14.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Quan sát dãy truy hồi tiến về 2</h2><span class="slide-category">Minh họa</span></div><div class="card">$a_1=\sqrt2$, $a_{n+1}=\sqrt{2+a_n}$.</div><figure class="diagram"><svg viewBox="0 0 900 280" role="img" aria-label="Dãy căn lồng: tăng và nằm dưới 2"><rect width="900" height="280" fill="white"/><path d="M65 25 V230 H850" fill="none" stroke="#64748b" stroke-width="2"/><text x="55" y="211.4" text-anchor="end" font-size="16">1.35</text><text x="55" y="140.0" text-anchor="end" font-size="16">1.70</text><text x="55" y="68.6" text-anchor="end" font-size="16">2.05</text><line x1="65" x2="845" y1="73.8" y2="73.8" stroke="#d97706" stroke-width="2" stroke-dasharray="8 5"/><text x="850" y="78.8" fill="#92400e" font-size="16">L</text><circle cx="65.0" cy="193.3" r="4.5" fill="#2563eb"/><circle cx="134.1" cy="104.8" r="4.5" fill="#2563eb"/><circle cx="203.2" cy="81.6" r="4.5" fill="#2563eb"/><circle cx="272.3" cy="75.7" r="4.5" fill="#2563eb"/><circle cx="341.4" cy="74.3" r="4.5" fill="#2563eb"/><circle cx="410.5" cy="73.9" r="4.5" fill="#2563eb"/><circle cx="479.5" cy="73.8" r="4.5" fill="#2563eb"/><circle cx="548.6" cy="73.8" r="4.5" fill="#2563eb"/><circle cx="617.7" cy="73.8" r="4.5" fill="#2563eb"/><circle cx="686.8" cy="73.8" r="4.5" fill="#2563eb"/><circle cx="755.9" cy="73.8" r="4.5" fill="#2563eb"/><circle cx="825.0" cy="73.8" r="4.5" fill="#2563eb"/><text x="65.0" y="255" text-anchor="middle" font-size="16">1</text><text x="410.5" y="255" text-anchor="middle" font-size="16">6</text><text x="825.0" y="255" text-anchor="middle" font-size="16">12</text><text x="855" y="250" font-size="20">n</text><text x="22" y="25" font-size="20">aₙ</text></svg><figcaption>Dãy căn lồng: tăng và nằm dưới 2 · Các điểm biểu diễn số hạng; không nối thành đường liên tục.</figcaption></figure><div class="prompt">Hình vẽ kiểm tra dự đoán; quy nạp và định lý đơn điệu bảo đảm kết luận với vô hạn số hạng.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy bậc hai: chọn đúng nghiệm giới hạn</h2><span class="slide-category">Ví dụ truy hồi</span></div><div class="card">$a_1=5/2$, $a_{n+1}=(a_n^2+6)/5$.</div><div class="box-math"><strong>Khoảng bất biến:</strong> nếu $2&lt;a_n\le5/2$, thì $$2&lt;\frac{a_n^2+6}{5}\le\frac{49}{20}&lt;\frac52.$$ Quy nạp suy ra $2&lt;a_n\le5/2$ với mọi $n$.</div><div class="card"><strong>Đơn điệu:</strong> $$a_{n+1}-a_n=\frac{(a_n-2)(a_n-3)}5&lt;0.$$ Dãy giảm và bị chặn dưới nên hội tụ. $5L=L^2+6$ cho $L=2$ hoặc $3$. Vì $L\in[2,5/2]$, kết luận $L=2$.</div><p class="source-note">Giáo trình: Bài 6.1.15.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy phân thức bắt đầu từ 2</h2><span class="slide-category">Ví dụ truy hồi</span></div><div class="card">$a_1=2$, $a_{n+1}=1/(3-a_n)$. Đặt $r=(3-\sqrt5)/2$, $s=(3+\sqrt5)/2$.</div><div class="box-math">$0&lt;r&lt;2&lt;s$. Nếu $r&lt;a_n\le2$, thì $1\le3-a_n&lt;3-r$ và $$r=\frac1{3-r}&lt;a_{n+1}\le1&lt;2.$$ Do đó $r&lt;a_n\le2$ với mọi $n$.</div><div class="card">$$a_{n+1}-a_n=\frac{a_n^2-3a_n+1}{3-a_n}=\frac{(a_n-r)(a_n-s)}{3-a_n}&lt;0.$$ Dãy <strong>giảm</strong>, bị chặn dưới; giới hạn thỏa $L=1/(3-L)$ và $L\le2$, nên $L=r$.</div><div class="prompt">Kiểm tra dự đoán: a₁ = 2, a₂ = 1, a₃ = 1/2.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Xấp xỉ căn 2 bằng dãy truy hồi</h2><span class="slide-category">Ví dụ truy hồi</span></div><div class="card">$a_1=10$, $a_{n+1}=a_n/2+1/a_n$.</div><div class="box-math">Với $a_n&gt;0$: $$a_{n+1}-\sqrt2=\frac{(a_n-\sqrt2)^2}{2a_n}\ge0.$$ Từ $a_1\ge\sqrt2$, quy nạp được $a_n\ge\sqrt2$.</div><div class="card">$$a_{n+1}-a_n=\frac{2-a_n^2}{2a_n}\le0.$$ Dãy giảm và bị chặn dưới nên hội tụ về $L\ge\sqrt2$. Lấy giới hạn: $L=L/2+1/L$, suy ra $L=\sqrt2$.</div><div class="prompt">Giá trị khởi đầu có thể rất xa giới hạn; hội tụ là tính chất của phần đuôi.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Một dãy hội tụ nhưng không đơn điệu</h2><span class="slide-category">Ví dụ truy hồi</span></div><div class="card">$a_1=1$, $a_{n+1}=3+1/a_n$. Các số hạng đầu: $1,4,13/4,43/13,\ldots$.</div><div class="box-math">Với $n\ge2$, $3&lt;a_n\le4$. Đặt $L=(3+\sqrt{13})/2&gt;3$, thỏa $L=3+1/L$. Khi $n\ge2$: $$|a_{n+1}-L|=\frac{|a_n-L|}{a_nL}\le\frac19|a_n-L|.$$ Lặp lại: $|a_n-L|\le(1/9)^{n-2}|a_2-L|\to0$.</div><div class="card">Vậy $a_n\to L$. Ngoài ra $a_{n+1}-L=-(a_n-L)/(a_nL)$: sai số đổi dấu sau mỗi bước, nên toàn dãy không đơn điệu.</div><p class="source-note">Dùng $q^n\to0$ với $0&lt;q&lt;1$: viết $q=1/(1+c)$, $c&gt;0$; Bernoulli cho $0&lt;q^n\le1/(1+nc)\to0$.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dãy tiến ra vô cùng</h2><span class="slide-category">Bổ sung từ giáo trình</span></div><div class="grid-2"><div class="card">$a_n\to+\infty$ nghĩa là $$\forall M\in\mathbb R,\ \exists N,\ \forall n\ge N:\ a_n&gt;M.$$ Ví dụ $a_n=n$: chọn số nguyên $N&gt;\max\{M,0\}$. </div><div class="card">$a_n\to-\infty$ nghĩa là $$\forall M\in\mathbb R,\ \exists N,\ \forall n\ge N:\ a_n&lt;M.$$ Ví dụ $a_n=-n$: chọn $N&gt;\max\{-M,0\}$.</div></div><div class="box-math">Tiến ra vô cùng là phân kỳ theo định nghĩa hội tụ hữu hạn. Dãy phân kỳ cũng có thể dao động, như (−1)ⁿ.</div><div class="prompt">∞ không phải số thực. Không dùng các phép tính trên số thực một cách hình thức với ∞.</div><p class="source-note">Giáo trình: Định nghĩa 1.1.31 và các ví dụ tiếp theo.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chọn công cụ giải bài tập dãy số</h2><span class="slide-category">Tổng kết</span></div><div class="card"><table><thead><tr><th>Dạng bài</th><th>Công cụ</th></tr></thead><tbody><tr><td>Yêu cầu ε–N</td><td>Ước lượng |aₙ − L|, chọn N, kiểm tra mọi n ≥ N</td></tr><tr><td>Phân thức, căn thức</td><td>Chia lũy thừa cao nhất, liên hợp, quy tắc giới hạn</td></tr><tr><td>Dao động với biên độ nhỏ</td><td>Trị tuyệt đối và định lý kẹp</td></tr><tr><td>Truy hồi</td><td>Khoảng bất biến → đơn điệu/bước co → hội tụ → giới hạn</td></tr></tbody></table></div><div class="prompt"><a href="baitap.html" target="_blank" rel="noopener">Mở bộ bài tập dãy số và hướng dẫn giải</a>. Nội dung tiếp theo: hàm số một biến, giới hạn và sự liên tục.</div><p class="source-note">Nguồn: giáo trình Vi tích phân 1, mục 1.1.4; Bài 1.1.15–1.1.16 và các bài dãy số 6.1.13–6.1.17. Minh họa được vẽ từ công thức của từng dãy.</p></div></div><div class="nav-bar"><a class="home-link" href="index.html" aria-label="Về giới thiệu chuyên đề">Chuyên đề</a><button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Trang trước</button><div class="slide-counter"><label for="slideSelect">Đến trang </label><select id="slideSelect"></select> <span id="slideCounter" aria-live="polite"></span></div><button class="nav-btn" id="fullscreenBtn" type="button" aria-pressed="false" title="Toàn màn hình (F)">⛶ Toàn màn hình</button><button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Trang sau ❯</button></div>
+    <div id="screenStatus" class="screen-status" role="status" aria-live="polite"></div><script>
+        let currentSlide = 0;
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideSelect = document.getElementById('slideSelect');
+        slides.forEach((slide, i) => {
+            const option = document.createElement('option'); option.value = i;
+            option.textContent = `${i+1}. ${slide.querySelector('h2.slide-title, h1').textContent.trim()}`;
+            slideSelect.appendChild(option);
+        });
+        function updateSlide() {
+            slides.forEach((slide, i) => { slide.classList.toggle('active', i === currentSlide); slide.setAttribute('aria-hidden', String(i !== currentSlide)); });
+            slides[currentSlide].scrollTop = 0;
+            progressBar.style.width = ((currentSlide+1)/totalSlides*100)+'%';
+            slideCounter.textContent = `${currentSlide+1} / ${totalSlides}`;
+            slideSelect.value = currentSlide;
+            prevBtn.disabled = currentSlide === 0; nextBtn.disabled = currentSlide === totalSlides-1;
+            if (typeof window.MathJax?.typesetPromise === 'function') {
+                window.MathJax.typesetPromise([slides[currentSlide]]).catch(console.error);
+            }
+        }
+        function changeSlide(direction) { currentSlide = Math.max(0, Math.min(totalSlides-1, currentSlide+direction)); updateSlide(); }
+        slideSelect.addEventListener('change', () => { currentSlide = Number(slideSelect.value); updateSlide(); });
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const screenStatus = document.getElementById('screenStatus');
+        function syncFullscreen() {
+            const active = Boolean(document.fullscreenElement);
+            fullscreenBtn.textContent = active ? '⛶ Thoát toàn màn hình' : '⛶ Toàn màn hình';
+            fullscreenBtn.setAttribute('aria-pressed', String(active));
+        }
+        async function toggleFullscreen() {
+            screenStatus.textContent = '';
+            try {
+                if (document.fullscreenElement) await document.exitFullscreen();
+                else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+                else throw new Error('Fullscreen unavailable');
+            } catch (error) {
+                screenStatus.textContent = 'Không thể bật toàn màn hình trong cửa sổ này. Hãy mở bài giảng ở tab riêng hoặc dùng F11 trên máy tính.';
+            }
+            syncFullscreen();
+        }
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', syncFullscreen);
+        document.addEventListener('keydown', e => {
+            if (e.altKey || e.ctrlKey || e.metaKey || e.target.closest('select, input, textarea, [contenteditable="true"]')) return;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+            else if (e.key === 'Home') { e.preventDefault(); currentSlide = 0; updateSlide(); }
+            else if (e.key === 'End') { e.preventDefault(); currentSlide = totalSlides - 1; updateSlide(); }
+            else if (e.key.toLowerCase() === 'f' && !e.repeat) { e.preventDefault(); toggleFullscreen(); }
+            else if (e.code === 'Space' && !e.target.closest('button, a')) { e.preventDefault(); changeSlide(e.shiftKey ? -1 : 1); }
+        });
+        syncFullscreen();
+
+        let sequenceMode='reciprocal';
+        const epsSlider=document.getElementById('epsilon');
+        function drawSequence(){
+            const eps=Number(epsSlider.value), N=Math.floor(1/eps+1e-9)+1;
+            document.getElementById('epsValue').textContent=eps.toFixed(2).replace('.',',');
+            const x=n=>65+(n-1)*19.2,y=v=>150-v*100;
+            let out=`<rect width="900" height="300" fill="white"/><rect x="65" y="${y(eps)}" width="770" height="${2*eps*100}" fill="#dcfce7"/><path d="M65 25 V265 M65 150 H840" stroke="#64748b" fill="none"/>`;
+            for(const v of [-1,-eps,0,eps,1])out+=`<text x="53" y="${y(v)+5}" text-anchor="end" font-size="16">${v.toFixed(2)}</text>`;
+            for(const v of [-eps,eps])out+=`<line x1="65" x2="840" y1="${y(v)}" y2="${y(v)}" stroke="#16a34a" stroke-dasharray="5 5"/>`;
+            for(let n=1;n<=40;n++){const a=sequenceMode==='oscillating'?(-1)**n:sequenceMode==='alternating'?(-1)**n/n:1/n;out+=`<circle cx="${x(n)}" cy="${y(a)}" r="4" fill="${Math.abs(a)<eps-1e-10?'#2563eb':'#dc2626'}"/>`;}
+            if(sequenceMode!=='oscillating')out+=`<line x1="${x(N)}" x2="${x(N)}" y1="25" y2="265" stroke="#d97706" stroke-dasharray="7 5"/><text x="${x(N)+6}" y="30" fill="#92400e" font-size="18">N = ${N}</text>`;
+            for(const n of [1,10,20,30,40])out+=`<text x="${x(n)}" y="288" text-anchor="middle" font-size="16">${n}</text>`;
+            document.getElementById('epsilonPlot').innerHTML=out;
+            document.getElementById('epsilonResult').textContent=sequenceMode==='oscillating'?'Không có ngưỡng N cho dải này quanh 0: |aₙ| = 1 ở mọi chỉ số. Chứng minh riêng cho thấy dãy không hội tụ về bất kỳ L nào.':`Chọn N = ${N} > 1/ε. Với mọi n ≥ N, |aₙ| = 1/n ≤ 1/N < ε. Điểm đỏ nằm ngoài dải mở; điểm xanh nằm trong dải.`;
+        }
+        epsSlider.addEventListener('input',drawSequence);
+        document.querySelectorAll('[data-sequence]').forEach(b=>b.addEventListener('click',()=>{sequenceMode=b.dataset.sequence;document.querySelectorAll('[data-sequence]').forEach(c=>c.setAttribute('aria-pressed',String(c===b)));drawSequence();}));
+        function updateE(){const n=Number(document.getElementById('eIndex').value),u=Math.exp(n*Math.log1p(1/n)),v=u*(1+1/n);document.getElementById('eN').textContent=n;document.getElementById('eLower').textContent=u.toFixed(8).replace('.',',');document.getElementById('eUpper').textContent=v.toFixed(8).replace('.',',');document.getElementById('eGap').textContent='Độ rộng khoảng kẹp vₙ − uₙ ≈ '+(v-u).toFixed(8).replace('.',',');}
+        document.getElementById('eIndex').addEventListener('input',updateE);
+        drawSequence();updateE();updateSlide();
+</script></body></html>

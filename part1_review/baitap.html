@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Ôn Tập Nền Tảng - Vi Tích Phân 1</title>
+    
+    <!-- Tích hợp MathJax để hiển thị công thức Toán LaTeX -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0 0 8px 0; font-size: 24px; }
+        header p { margin: 0; opacity: 0.9; font-size: 15px; }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .btn-master {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-master:hover { background-color: var(--primary-light); }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 6px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-size: 19px;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .problem-statement {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .toggle-btn {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-light);
+        }
+
+        .solution-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px 18px;
+            background-color: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            border-radius: 0 8px 8px 0;
+            font-size: 14.5px;
+        }
+        .solution-box.show { display: block; }
+        .solution-title {
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 8px;
+        }
+    .source-note, .section-note { color: #475569; font-size: 13px; margin: 0 0 12px; }
+        .study-note { background: #eff6ff; padding: 16px 20px; border-radius: 8px; }
+        .toolbar { gap: 12px; flex-wrap: wrap; }
+        .solution-box { overflow-x: auto; }
+        .problem-statement { overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>BÀI TẬP ÔN TẬP NỀN TẢNG VI TÍCH PHÂN 1</h1>
+        <p>Theo thứ tự slide: Tập hợp → Số thực → Quy tắc suy luận và chứng minh</p>
+    </header>
+
+    <p><a href="index.html">← Giới thiệu chuyên đề</a></p><div class="toolbar">
+        <span>Tổng số: <strong>20 bài: 19 bài phần 1 + 1 bài đọc trước</strong></span>
+        <button class="btn-master" id="masterBtn" onclick="toggleAllSolutions()">👁️ Hiện Tất Cả Hướng Dẫn</button>
+    </div>
+
+<p class="study-note">Bài tập được xếp theo tiến trình phần 1 của slide Vi tích phân 1C.
+Các bài từ giáo trình <em>Vi tích phân 1</em> (bản 15/8/2025) được ghi số bài và trang in trong sách (tr. 19–20, tương ứng trang PDF 25–26).
+Hãy tự làm trước khi mở hướng dẫn. Bài nhị thức Newton dành cho luyện thêm; bài song ánh cuối trang dành cho phần hàm số.</p>
+<h2 class="section-title">1. Tập hợp và các phép toán</h2><p class="section-note">Slide 4–7</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 1</span><p class="source-note">Giáo trình: Bài 1.1.1, tr. 19</p>
+        <div class="problem-statement">
+            Cho $A, B, C$ là ba tập hợp thỏa mãn $A \subseteq B$ và $B \subseteq C$. Chứng minh rằng $A \subseteq C$.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol1" onclick="toggleSolution('sol1', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol1">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            Lấy phần tử $x$ bất kỳ thuộc $A$ ($x \in A$).<br>
+            Do $A \subseteq B \implies x \in B$.<br>
+            Do $B \subseteq C \implies x \in C$.<br>
+            Như vậy $\forall x \in A \implies x \in C$. Theo định nghĩa tập con, ta kết luận $A \subseteq C$.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 2</span><p class="source-note">Bổ sung theo slide 4–7</p>
+        <div class="problem-statement">Cho $A=(-1,2]$, $B=[1,3)$.<br>a) Tìm $A\cup B$, $A\cap B$, $A\setminus B$, $B\setminus A$.<br>b) Phân biệt hai khẳng định $1\in A$ và $\{1\}\subseteq A$. Chúng có đúng không?</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol2', this)" aria-expanded="false" aria-controls="sol2">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol2"><div class="solution-title">Hướng dẫn giải:</div>a) $A\cup B=(-1,3)$; $A\cap B=[1,2]$; $A\setminus B=(-1,1)$; $B\setminus A=(2,3)$.<br>b) Cả hai đều đúng. Khẳng định thứ nhất nói về một phần tử; khẳng định thứ hai nói về một tập con. Không đồng nhất phần tử $1$ với tập hợp $\{1\}$.</div>
+    </div>
+
+<h2 class="section-title">2. Số thực, tính bị chặn và biên</h2><p class="section-note">Slide 8–11</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 3</span><p class="source-note">Giáo trình: Bài 1.1.14 (a–c), tr. 20; bổ trợ về số thực</p>
+        <div class="problem-statement">
+            Chứng minh các bất đẳng thức tam giác sau với mọi $x, y \in \mathbb{R}$:<br>
+            a) $|x + y| \le |x| + |y|$<br>
+            b) $|x| - |y| \le |x - y|$<br>c) $\big||x|-|y|\big|\le|x-y|$
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol3" onclick="toggleSolution('sol3', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol3">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            a) Bình phương 2 vế: $|x+y|^2 = (x+y)^2 = x^2 + 2xy + y^2$.<br>
+            $(|x|+|y|)^2 = |x|^2 + 2|x||y| + |y|^2 = x^2 + 2|xy| + y^2$.<br>
+            Vì $xy \le |xy| \implies x^2 + 2xy + y^2 \le x^2 + 2|xy| + y^2 \implies |x+y| \le |x| + |y|$.<br>
+            b) Áp dụng câu a: $|x| = |(x-y) + y| \le |x-y| + |y| \implies |x| - |y| \le |x-y|$.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 4</span><p class="source-note">Bổ sung theo slide 10–11</p>
+        <div class="problem-statement">Xét các tập $A=(0,1)$, $B=(-2,3]$, $C=[1,+\infty)$. Với mỗi tập, xác định tính bị chặn trên, bị chặn dưới; tìm biên trên, biên dưới trong $\mathbb R$ và giá trị lớn nhất, nhỏ nhất nếu có. Với $A$, hãy cho hai cận trên khác nhau.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol4', this)" aria-expanded="false" aria-controls="sol4">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol4"><div class="solution-title">Hướng dẫn giải:</div>$A$: bị chặn hai phía, $\inf A=0$, $\sup A=1$; không có giá trị nhỏ nhất hoặc lớn nhất. Hai cận trên có thể chọn là $1$ và $2$. Nếu $u<1$, luôn có $x\in(0,1)$ với $x>u$ (chọn $x=(\max\{u,0\}+1)/2$), nên $u$ không phải cận trên.<br>$B$: bị chặn hai phía, $\inf B=-2$, $\sup B=\max B=3$; không có giá trị nhỏ nhất.<br>$C$: bị chặn dưới, $\inf C=\min C=1$; không bị chặn trên, không có biên trên trong $\mathbb R$ và không có giá trị lớn nhất.<br><strong>Ghi nhớ:</strong> cận trên không cần thuộc tập; giá trị lớn nhất phải thuộc tập.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 5</span><p class="source-note">Bài bổ sung: áp dụng định nghĩa biên trong slide 10–11</p>
+        <div class="problem-statement">
+            Xét tập hợp $A = \left\{ \frac{(-1)^n}{n} \;\middle|\; n \in \mathbb{N}^* \right\} = \left\{ -1, \frac{1}{2}, -\frac{1}{3}, \frac{1}{4}, \dots \right\}$.<br>
+            Xác định $\sup A, \inf A, \max A, \min A$ (nếu có).
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol5" onclick="toggleSolution('sol5', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol5">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            Tập $A$ bị chặn vì $-1 \le \frac{(-1)^n}{n} \le \frac{1}{2}$ với mọi $n \ge 1$.<br>
+            • Phần tử nhỏ nhất: $\min A = -1$ (đạt được tại $n=1$). Do đó $\inf A = -1$.<br>
+            • Phần tử lớn nhất: $\max A = \frac{1}{2}$ (đạt được tại $n=2$). Do đó $\sup A = \frac{1}{2}$.
+        </div>
+    </div>
+
+<h2 class="section-title">3. Quy tắc suy luận và phủ định</h2><p class="section-note">Slide 12–15</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 6</span><p class="source-note">Bổ sung theo slide 12–15</p>
+        <div class="problem-statement">Viết phủ định của các mệnh đề:<br>a) Mọi sinh viên trong lớp đều đã tải tài liệu.<br>b) $\exists x\in\mathbb R,\ x^2<0$.<br>c) Với một số nguyên $m$ đã cho: “Nếu $m^2$ chẵn thì $m$ chẵn”.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol6', this)" aria-expanded="false" aria-controls="sol6">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol6"><div class="solution-title">Hướng dẫn giải:</div>a) Có ít nhất một sinh viên trong lớp chưa tải tài liệu.<br>b) $\forall x\in\mathbb R,\ x^2\ge0$.<br>c) “$m^2$ chẵn và $m$ lẻ”. Dùng $\neg(P\Rightarrow Q)\equiv P\land\neg Q$. Đây là cách phủ định về mặt logic, không phải khẳng định rằng có số nguyên thỏa điều đó.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 7</span><p class="source-note">Giáo trình: Bài 1.1.2, tr. 19</p>
+        <div class="problem-statement">
+            Cho mệnh đề: <em>"Tồn tại số thực dương $M$ sao cho với mọi phần tử $x$ của tập $A$ thì $x \le M$"</em>.<br>
+            Hãy viết mệnh đề phủ định của mệnh đề trên bằng cách sử dụng các ký hiệu lượng tử $\forall, \exists$.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol7" onclick="toggleSolution('sol7', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol7">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            Mệnh đề ban đầu viết dưới dạng ký hiệu: $\exists M > 0, \forall x \in A, x \le M$.<br>
+            Áp dụng quy tắc phủ định lượng tử ($\overline{\exists} \to \forall$, $\overline{\forall} \to \exists$ và phủ định bất đẳng thức $\overline{x \le M} \to x > M$):<br>
+            <strong>Mệnh đề phủ định:</strong> $\forall M > 0, \exists x \in A, x > M$.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 8</span><p class="source-note">Bổ sung theo slide 15</p>
+        <div class="problem-statement">
+            Cho $m\in\mathbb Z$. a) Phát biểu mệnh đề phản đảo $\bar{B} \implies \bar{A}$ của mệnh đề: <em>"Nếu $m^2$ chẵn thì $m$ chẵn"</em>.<br>
+            b) Giải thích vì sao $A \implies B \equiv \bar{B} \implies \bar{A}$, nhưng nói chung không tương đương về mặt logic với mệnh đề đảo $B \implies A$.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol8" onclick="toggleSolution('sol8', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol8">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            a) Mệnh đề $A$: "$m^2$ chẵn", $B$: "$m$ chẵn".<br>
+            Phủ định: $\bar{B}$: "$m$ lẻ", $\bar{A}$: "$m^2$ lẻ".<br>
+            $\implies$ <strong>Mệnh đề phản đảo:</strong> <em>"Nếu $m$ lẻ thì $m^2$ lẻ"</em>.<br>
+            b) Bảng chân trị chứng minh $A \implies B$ luôn có cùng giá trị đúng/sai với $\bar{B} \implies \bar{A}$. Mệnh đề đảo $B \implies A$ không tương đương vì khi $A$ sai, $B$ đúng thì $A \implies B$ đúng nhưng $B \implies A$ sai.
+        </div>
+    </div>
+
+<h2 class="section-title">4. Quy nạp toán học</h2><p class="section-note">Slide 14; vận dụng ở slide 16</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 9</span><p class="source-note">Giáo trình: Bài 1.1.6 (a–c), tr. 19</p>
+        <div class="problem-statement">Dùng quy nạp kiểm tra các công thức với mọi số nguyên dương $n$:<br>
+a) $1+2+\cdots+n=\frac{n(n+1)}2$.<br>
+b) $1^2+2^2+\cdots+n^2=\frac{n(n+1)(2n+1)}6$.<br>
+c) $1^3+2^3+\cdots+n^3=\frac{n^2(n+1)^2}4$.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol9', this)" aria-expanded="false" aria-controls="sol9">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol9"><div class="solution-title">Hướng dẫn giải:</div>Cả ba công thức đều đúng tại $n=1$. Giả sử từng công thức đúng tại $n=k$. Cộng số hạng tiếp theo vào hai vế:<br>
+a) $\frac{k(k+1)}2+(k+1)=\frac{(k+1)(k+2)}2$.<br>
+b) $\frac{k(k+1)(2k+1)}6+(k+1)^2=\frac{(k+1)(k+2)(2k+3)}6$.<br>
+c) $\frac{k^2(k+1)^2}4+(k+1)^3=\frac{(k+1)^2(k+2)^2}4$.<br>
+Mỗi kết quả chính là công thức tương ứng tại $n=k+1$.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 10</span><p class="source-note">Giáo trình: Bài 1.1.9, tr. 19; slide 16, bài 3 (hiệu chỉnh dấu)</p>
+        <div class="problem-statement">
+            Cho $\alpha > -1$. Chứng minh Bất đẳng thức Bernoulli bằng quy nạp: $(1 + \alpha)^n \ge 1 + n\alpha, \forall n \in \mathbb{N}^*$.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol10" onclick="toggleSolution('sol10', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol10">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            • <strong>Bước cơ sở:</strong> Với $n=1$: $(1+\alpha)^1 = 1 + 1\cdot\alpha$ (Đúng).<br>
+            • <strong>Giả thiết quy nạp:</strong> Giả sử đúng với $n=k \ge 1$: $(1+\alpha)^k \ge 1 + k\alpha$.<br>
+            • <strong>Bước quy nạp:</strong> Cần chứng minh đúng với $n=k+1$, tức $(1+\alpha)^{k+1} \ge 1 + (k+1)\alpha$.<br>
+            Nhân 2 vế của giả thiết quy nạp với $(1+\alpha) > 0$:<br>
+            $(1+\alpha)^{k+1} \ge (1+k\alpha)(1+\alpha) = 1 + \alpha + k\alpha + k\alpha^2 = 1 + (k+1)\alpha + k\alpha^2$.<br>
+            Vì $k\alpha^2 \ge 0 \implies (1+\alpha)^{k+1} \ge 1 + (k+1)\alpha$ (ĐPCM).<br>Với $n\ge2$ và $\alpha\ne0$, bước quy nạp có $k\alpha^2>0$, nên bất đẳng thức là nghiêm. Với $\alpha=0$ hoặc $n=1$, xảy ra dấu bằng.<br><strong>Lưu ý về đề nguồn:</strong> giáo trình và slide ghi dấu $>$ nhưng không loại $\alpha=0$; ở đây dùng dấu $\ge$ để phát biểu đúng.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 11</span><p class="source-note">Giáo trình: Bài 1.1.10, tr. 19</p>
+        <div class="problem-statement">Cho $c\in\mathbb R$, $c\ne1$ và $n$ là số nguyên dương. Kiểm tra công thức
+$$1+c+c^2+\cdots+c^n=\frac{1-c^{n+1}}{1-c}.$$</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol11', this)" aria-expanded="false" aria-controls="sol11">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol11"><div class="solution-title">Hướng dẫn giải:</div>Đặt $S=1+c+\cdots+c^n$. Khi đó $cS=c+c^2+\cdots+c^{n+1}$. Lấy hiệu: $(1-c)S=1-c^{n+1}$. Vì $c\ne1$, chia hai vế cho $1-c$ thu được công thức. Có thể kiểm tra lại bằng quy nạp. Nếu $c=1$, tổng bằng $n+1$, còn biểu thức phân thức không xác định.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 12</span><p class="source-note">Giáo trình: Bài 1.1.11, tr. 19</p>
+        <div class="problem-statement">Dùng quy nạp chứng minh với mọi $a,b\in\mathbb R$ và số nguyên dương $n$:
+$$a^n-b^n=(a-b)\sum_{j=0}^{n-1}a^{n-1-j}b^j.$$</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol12', this)" aria-expanded="false" aria-controls="sol12">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol12"><div class="solution-title">Hướng dẫn giải:</div>Với $n=1$, công thức là $a-b=(a-b)\cdot1$. Giả sử đúng với $n=k$. Khi đó
+$$a^{k+1}-b^{k+1}=a(a^k-b^k)+(a-b)b^k
+=(a-b)\left(a\sum_{j=0}^{k-1}a^{k-1-j}b^j+b^k\right)
+=(a-b)\sum_{j=0}^{k}a^{k-j}b^j.$$
+Vậy công thức đúng với $k+1$ và do đó đúng với mọi $n\ge1$.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 13</span><p class="source-note">Giáo trình: Bài 1.1.12, tr. 20 · Luyện thêm</p>
+        <div class="problem-statement">Cho $a,b\in\mathbb R$ và số nguyên dương $n$. Kiểm tra công thức nhị thức Newton:
+$$(a+b)^n=\sum_{i=0}^{n}\binom ni a^i b^{n-i},\qquad \binom ni=\frac{n!}{i!(n-i)!}.$$</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol13', this)" aria-expanded="false" aria-controls="sol13">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol13"><div class="solution-title">Hướng dẫn giải:</div>Dùng quy nạp. Với $n=1$, hai vế bằng $a+b$. Giả sử công thức đúng với $n=k$, nhân hai vế với $a+b$. Với $1\le i\le k$, hệ số của $a^i b^{k+1-i}$ là
+$$\binom{k}{i-1}+\binom{k}{i}=\binom{k+1}{i}.$$
+Hai số hạng biên là $b^{k+1}$ và $a^{k+1}$, đều có hệ số $1$. Thu được công thức cho $k+1$. Đồng nhất thức hệ số ở trên có thể kiểm tra trực tiếp bằng công thức giai thừa.</div>
+    </div>
+
+<h2 class="section-title">5. Phản chứng và vận dụng quy tắc suy luận</h2><p class="section-note">Slide 15–16</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 14</span><p class="source-note">Giáo trình: Bài 1.1.7(a), tr. 19; slide 16, bài 1(a)</p>
+        <div class="problem-statement">
+            Cho $m \in \mathbb{N}$. Chứng minh bằng phản chứng: <em>"Nếu $m^2$ chẵn thì $m$ chẵn"</em>.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol14" onclick="toggleSolution('sol14', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol14">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            Giả sử ngược lại $m$ là số lẻ $\implies m = 2k + 1$ ($k \in \mathbb{N}$).<br>
+            Khi đó $m^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$.<br>
+            Suy ra $m^2$ là số lẻ. Điều này mâu thuẫn với giả thiết $m^2$ là số chẵn.<br>
+            Vậy $m$ bắt buộc phải là số chẵn.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 15</span><p class="source-note">Giáo trình: Bài 1.1.7(b), tr. 19; slide 16, bài 1(b)</p>
+        <div class="problem-statement">Chứng minh rằng nếu một số chính phương là chẵn thì số đó chia hết cho $4$.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol15', this)" aria-expanded="false" aria-controls="sol15">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol15"><div class="solution-title">Hướng dẫn giải:</div>Viết số chính phương là $m^2$ với $m\in\mathbb Z$. Từ $m^2$ chẵn suy ra $m$ chẵn (áp dụng kết quả bài trước cho $|m|$). Đặt $m=2k$, $k\in\mathbb Z$. Khi đó $m^2=4k^2$, nên $4\mid m^2$.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 16</span><p class="source-note">Giáo trình: Bài 1.1.8, tr. 19; slide 16, bài 2</p>
+        <div class="problem-statement">
+            Chứng minh rằng $\sqrt{2}$ là số vô tỉ (không tồn tại phân số tối giản $\frac{m}{n}$ sao cho $(\frac{m}{n})^2 = 2$).
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol16" onclick="toggleSolution('sol16', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol16">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            Giả sử $\sqrt{2}$ là số hữu tỉ $\implies \sqrt{2} = \frac{m}{n}$ với $m, n \in \mathbb{N}^*, \text{gcd}(m,n) = 1$.<br>
+            $\implies m^2 = 2n^2 \implies m^2$ chẵn $\implies m$ chẵn $\implies m = 2k$.<br>
+            Thay vào: $(2k)^2 = 2n^2 \iff 4k^2 = 2n^2 \iff n^2 = 2k^2 \implies n^2$ chẵn $\implies n$ chẵn.<br>
+            Do $m$ và $n$ cùng chẵn nên $\text{gcd}(m,n) \ge 2$, mâu thuẫn với giả thiết phân số tối giản ($\text{gcd}(m,n)=1$).<br>
+            Vậy $\sqrt{2}$ là số vô tỉ.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 17</span><p class="source-note">Slide 16, bài 4</p>
+        <div class="problem-statement">Cho $a\in\mathbb R$ thỏa $\forall\varepsilon>0,\ |a|<\varepsilon$. Chứng minh $a=0$.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol17', this)" aria-expanded="false" aria-controls="sol17">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol17"><div class="solution-title">Hướng dẫn giải:</div>Giả sử $a\ne0$. Khi đó $\varepsilon=|a|/2>0$. Giả thiết cho $|a|<|a|/2$, vô lý vì $|a|>0$. Vậy $a=0$. Chú ý rằng $\varepsilon$ được chọn tùy theo $a$ vì giả thiết đúng với mọi $\varepsilon>0$.</div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 18</span><p class="source-note">Slide 16, bài 5</p>
+        <div class="problem-statement">
+            Chứng minh hai mệnh đề sau đây tương đương với nhau:<br>
+            Mệnh đề 1: $\forall \varepsilon > 0, a < \varepsilon$<br>
+            Mệnh đề 2: $a \le 0$
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol18" onclick="toggleSolution('sol18', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol18">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            • $(\Leftarrow)$ Nếu $a \le 0$, với mọi $\varepsilon > 0$ ta luôn có $a \le 0 < \varepsilon \implies a < \varepsilon$ (Đúng).<br>
+            • $(\Rightarrow)$ Chứng minh bằng phản chứng: Giả sử $a > 0$. Chọn $\varepsilon_0 = \frac{a}{2} > 0$. Theo giả thiết ta phải có $a < \varepsilon_0 \iff a < \frac{a}{2} \iff a < 0$ (Mâu thuẫn với $a > 0$).<br>
+            Vậy $a \le 0$.
+        </div>
+    </div>
+
+<div class="exercise-card">
+        <span class="badge">Bài 19</span><p class="source-note">Giáo trình: Bài 1.1.13, tr. 20</p>
+        <div class="problem-statement">Cho $a\in\mathbb R$. Chứng minh hai mệnh đề tương đương:<br>(I) $\forall\varepsilon>0,\ a<\varepsilon$.<br>(II) $\forall\varepsilon>0,\ a\le\varepsilon/2$.</div>
+        <button class="toggle-btn" onclick="toggleSolution('sol19', this)" aria-expanded="false" aria-controls="sol19">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol19"><div class="solution-title">Hướng dẫn giải:</div>(I) $\Rightarrow$ (II): Với $\varepsilon>0$ bất kỳ, áp dụng (I) cho số dương $\varepsilon/2$ được $a<\varepsilon/2$, nên $a\le\varepsilon/2$.<br>(II) $\Rightarrow$ (I): Với $\varepsilon>0$ bất kỳ, (II) cho $a\le\varepsilon/2<\varepsilon$. Vậy $a<\varepsilon$.</div>
+    </div>
+
+<h2 class="section-title">Đọc trước phần 3: Ánh xạ và hàm số</h2><p class="section-note">Ngoài phạm vi phần 1; slide 33–46</p>
+
+<div class="exercise-card">
+        <span class="badge">Bài 20</span><p class="source-note">Giáo trình: Bài 1.1.5, tr. 19 · Đọc trước</p>
+        <div class="problem-statement">
+            Xét tính đơn ánh, toàn ánh và song ánh của hàm số $f: \mathbb{R} \to \mathbb{R}, f(x) = x^3$.
+        </div>
+        <button class="toggle-btn" aria-expanded="false" aria-controls="sol20" onclick="toggleSolution('sol20', this)">👁️ Xem hướng dẫn giải</button>
+        <div class="solution-box" id="sol20">
+            <div class="solution-title">Hướng dẫn giải:</div>
+            • <strong>Đơn ánh:</strong> Giả sử $f(x_1) = f(x_2) \iff x_1^3 = x_2^3 \iff x_1 = x_2$. Vậy $f$ là đơn ánh.<br>
+            • <strong>Toàn ánh:</strong> Với mọi $y \in \mathbb{R}$, chọn $x = \sqrt[3]{y} \in \mathbb{R}$ ta có $f(x) = (\sqrt[3]{y})^3 = y$. Vậy $f$ là toàn ánh.<br>
+            • <strong>Song ánh:</strong> Vì $f$ vừa là đơn ánh vừa là toàn ánh nên $f$ là song ánh.
+        </div>
+    </div>
+</div>
+
+<script>
+    // Hàm ẩn/hiện giải cho từng bài
+    function toggleSolution(id, btn) {
+        const box = document.getElementById(id);
+        if (box.classList.contains('show')) {
+            box.classList.remove('show');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.innerHTML = '👁️ Xem hướng dẫn giải';
+        } else {
+            box.classList.add('show');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.innerHTML = '🙈 Ẩn hướng dẫn giải';
+        }
+    }
+
+    // Hàm ẩn/hiện tất cả
+    let allExpanded = false;
+    function toggleAllSolutions() {
+        const boxes = document.querySelectorAll('.solution-box');
+        const buttons = document.querySelectorAll('.toggle-btn');
+        const masterBtn = document.getElementById('masterBtn');
+
+        allExpanded = !allExpanded;
+
+        boxes.forEach((box, index) => {
+            if (allExpanded) {
+                box.classList.add('show');
+                buttons[index].setAttribute('aria-expanded', String(allExpanded));
+                buttons[index].innerHTML = '🙈 Ẩn hướng dẫn giải';
+            } else {
+                box.classList.remove('show');
+                buttons[index].setAttribute('aria-expanded', String(allExpanded));
+                buttons[index].innerHTML = '👁️ Xem hướng dẫn giải';
+            }
+        });
+
+        masterBtn.innerHTML = allExpanded ? '🙈 Ẩn Tất Cả Hướng Dẫn' : '👁️ Hiện Tất Cả Hướng Dẫn';
+    }
+</script>
+
+</body>
+</html>

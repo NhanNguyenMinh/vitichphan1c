@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập Dãy số thực - Vi tích phân 1C</title>
+    
+    <!-- Tích hợp MathJax để hiển thị công thức Toán LaTeX -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0 0 8px 0; font-size: 24px; }
+        header p { margin: 0; opacity: 0.9; font-size: 15px; }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .btn-master {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-master:hover { background-color: var(--primary-light); }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 6px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-size: 19px;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .problem-statement {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .toggle-btn {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-light);
+        }
+
+        .solution-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px 18px;
+            background-color: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            border-radius: 0 8px 8px 0;
+            font-size: 14.5px;
+        }
+        .solution-box.show { display: block; }
+        .solution-title {
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 8px;
+        }
+    .source-note, .section-note { color: #475569; font-size: 13px; margin: 0 0 12px; }
+        .study-note { background: #eff6ff; padding: 16px 20px; border-radius: 8px; }
+        .toolbar { gap: 12px; flex-wrap: wrap; }
+        .solution-box { overflow-x: auto; }
+        .problem-statement { overflow-x: auto; }
+    </style>
+</head>
+<body><div class="container"><header><h1>BÀI TẬP DÃY SỐ THỰC</h1><p>Vi tích phân 1C · Phần 2</p></header><p><a href="index.html">← Giới thiệu chuyên đề</a></p><div class="toolbar"><span>Tổng số: <strong>25 bài tập</strong></span><button class="btn-master" id="masterBtn" onclick="toggleAllSolutions()">Hiện tất cả hướng dẫn</button></div><p class="study-note">Làm theo thứ tự: khái niệm → định nghĩa hội tụ → các định lý → đơn điệu → truy hồi. Hãy tự làm trước khi xem hướng dẫn. <a href="baigiang.html">Mở bài giảng</a>. Các bài trích từ giáo trình được ghi số bài nguồn.</p><h2 class="section-title">1. Khái niệm và tính bị chặn</h2><div class="exercise-card"><span class="badge">Bài 1 · Dãy số và tập giá trị</span><p class="source-note">Giáo trình: Ví dụ 1.1.17 (chuyển thành bài tập)</p><div class="problem-statement">Viết 5 số hạng đầu, xác định tập giá trị và tính bị chặn của: a) $a_n=(-1)^n$; b) $b_n=1/(n-3)$, $n\ge4$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol1" onclick="toggleSolution('sol1', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol1"><div class="solution-title">Hướng dẫn giải</div>a) $-1,1,-1,1,-1$; tập giá trị $\{-1,1\}$, $|a_n|\le1$.<br>b) $1,1/2,1/3,1/4,1/5$; tập giá trị $\{1/k:k\ge1\}$, $0&lt;b_n\le1$.</div></div><div class="exercise-card"><span class="badge">Bài 2 · Cận và biên của tập giá trị</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Với $a_n=n/(n+1)$, $n\ge1$, tìm inf, sup, min và max của $A=\{a_n:n\ge1\}$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol2" onclick="toggleSolution('sol2', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol2"><div class="solution-title">Hướng dẫn giải</div>$a_{n+1}-a_n=1/((n+1)(n+2))&gt;0$, nên $\min A=\inf A=a_1=1/2$. Mọi $a_n&lt;1$, nên 1 là cận trên. Nếu $u&lt;1$, chọn $n$ sao cho $n+1&gt;1/(1-u)$; khi đó $a_n=1-1/(n+1)&gt;u$. Vậy $\sup A=1$, không có max vì $1\notin A$.</div></div><h2 class="section-title">2. Hội tụ theo định nghĩa</h2><div class="exercise-card"><span class="badge">Bài 3 · Chọn ngưỡng N</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Chứng minh $a_n=(-1)^n/n\to0$. Tìm một $N$ để $|a_n|&lt;0{,}01$ với mọi $n\ge N$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol3" onclick="toggleSolution('sol3', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol3"><div class="solution-title">Hướng dẫn giải</div>Cho $\varepsilon&gt;0$, chọn số nguyên $N&gt;1/\varepsilon$. Khi $n\ge N$, $|a_n|=1/n\le1/N&lt;\varepsilon$. Với $\varepsilon=0{,}01$, chọn $N=101$. $N=100$ chưa đủ vì $|a_{100}|=0{,}01$.</div></div><div class="exercise-card"><span class="badge">Bài 4 · Giới hạn phân thức bằng ε–N</span><p class="source-note">Giáo trình: Bài 1.1.15(a), bổ sung yêu cầu ε–N</p><div class="problem-statement">Chứng minh bằng định nghĩa $\dfrac{2n-1}{3n+2}\to\dfrac23$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol4" onclick="toggleSolution('sol4', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol4"><div class="solution-title">Hướng dẫn giải</div>$$\left|\frac{2n-1}{3n+2}-\frac23\right|=\frac5{9n+6}\le\frac5{9n}.$$ Với $\varepsilon&gt;0$, chọn số nguyên $N&gt;5/(9\varepsilon)$; mọi $n\ge N$ có sai số nhỏ hơn $\varepsilon$.</div></div><div class="exercise-card"><span class="badge">Bài 5 · Viết phủ định của hội tụ</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Viết phủ định của “$a_n\to L$”. Sau đó viết điều kiện để $(a_n)$ không hội tụ về bất kỳ số thực nào.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol5" onclick="toggleSolution('sol5', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol5"><div class="solution-title">Hướng dẫn giải</div>Không hội tụ về $L$: $\exists\varepsilon_0&gt;0,\ \forall N\ge1,\ \exists n\ge N:\ |a_n-L|\ge\varepsilon_0$.<br>Dãy phân kỳ: $\forall L\in\mathbb R,\ \exists\varepsilon_0&gt;0,\ \forall N\ge1,\ \exists n\ge N:\ |a_n-L|\ge\varepsilon_0$. Đổi lần lượt mọi lượng từ, đồng thời phủ định dấu $&lt;$ thành $\ge$.</div></div><div class="exercise-card"><span class="badge">Bài 6 · Dãy dao động không hội tụ</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Chứng minh $a_n=(-1)^n$ phân kỳ, dù dãy bị chặn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol6" onclick="toggleSolution('sol6', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol6"><div class="solution-title">Hướng dẫn giải</div>$|a_n|=1$ nên bị chặn. Nếu $a_n\to L$, chọn $\varepsilon=1/2$. Lấy chỉ số chẵn và lẻ cùng đủ lớn để có $|1-L|&lt;1/2$, $|-1-L|&lt;1/2$. Suy ra $2\le|1-L|+|L+1|&lt;1$, vô lý.</div></div><h2 class="section-title">3. Các định lý giới hạn</h2><div class="exercise-card"><span class="badge">Bài 7 · Tính duy nhất</span><p class="source-note">Giáo trình: Bài 1.1.16</p><div class="problem-statement">Chứng minh một dãy không thể hội tụ về hai giới hạn khác nhau.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol7" onclick="toggleSolution('sol7', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol7"><div class="solution-title">Hướng dẫn giải</div>Giả sử hai giới hạn $L\ne M$. Đặt $\varepsilon=|L-M|/3$. Với $n$ đủ lớn, $|a_n-L|&lt;\varepsilon$ và $|a_n-M|&lt;\varepsilon$. Khi đó $|L-M|\le|L-a_n|+|a_n-M|&lt;2|L-M|/3$, mâu thuẫn.</div></div><div class="exercise-card"><span class="badge">Bài 8 · Đúng hay sai? Giải thích</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">a) Dãy bị chặn luôn hội tụ.<br>b) Dãy hội tụ luôn bị chặn.<br>c) $a_n&lt;b_n$ và hai dãy hội tụ thì $\lim a_n&lt;\lim b_n$.<br>d) Dãy hội tụ luôn đơn điệu.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol8" onclick="toggleSolution('sol8', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol8"><div class="solution-title">Hướng dẫn giải</div>a) Sai: $(-1)^n$.<br>b) Đúng: lấy $\varepsilon=1$ để chặn phần đuôi bởi $|L|+1$, rồi lấy max với trị tuyệt đối hữu hạn số hạng đầu.<br>c) Sai: $a_n=0$, $b_n=1/n$ có cùng giới hạn 0.<br>d) Sai: $(-1)^n/n\to0$ nhưng không đơn điệu.</div></div><div class="exercise-card"><span class="badge">Bài 9 · Giới hạn kẹp</span><p class="source-note">Giáo trình: Bài 6.1.13(a,b)</p><div class="problem-statement">Tìm a) $\lim\sin n/n$; b) $\lim(\cos^2 n-\sin^2 n)/n$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol9" onclick="toggleSolution('sol9', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol9"><div class="solution-title">Hướng dẫn giải</div>a) $|\sin n/n|\le1/n\to0$, nên giới hạn bằng 0.<br>b) $|\cos^2 n-\sin^2 n|\le\cos^2 n+\sin^2 n=1$, nên trị tuyệt đối của biểu thức không vượt $1/n$. Giới hạn cũng bằng 0.</div></div><div class="exercise-card"><span class="badge">Bài 10 · Giới hạn của phân thức</span><p class="source-note">Giáo trình: Bài 1.1.15(b), Ví dụ 1.1.30</p><div class="problem-statement">Tìm a) $\lim\dfrac{-2n+1}{3n^2+2n-4}$; b) $\lim\dfrac{3n^2-n+3}{n^2+3n+2}$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol10" onclick="toggleSolution('sol10', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol10"><div class="solution-title">Hướng dẫn giải</div>Chia tử và mẫu cho $n^2$.<br>a) Tử $-2/n+1/n^2\to0$, mẫu $3+2/n-4/n^2\to3\ne0$: giới hạn 0.<br>b) Tử $3-1/n+3/n^2\to3$, mẫu $1+3/n+2/n^2\to1$: giới hạn 3.</div></div><div class="exercise-card"><span class="badge">Bài 11 · Dùng liên hợp</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tìm $\lim(\sqrt{n^2+n}-n)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol11" onclick="toggleSolution('sol11', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol11"><div class="solution-title">Hướng dẫn giải</div>Nhân liên hợp được $1/(\sqrt{1+1/n}+1)$. Vì $0\le\sqrt{1+1/n}-1\le1/(2n)\to0$, mẫu tiến về 2. Giới hạn là $1/2$.</div></div><div class="exercise-card"><span class="badge">Bài 12 · Giai thừa</span><p class="source-note">Giáo trình: Bài 1.1.15(g), Bài 6.1.13(c)</p><div class="problem-statement">Tìm a) $\lim1/n!$; b) $\lim n!/n^n$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol12" onclick="toggleSolution('sol12', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol12"><div class="solution-title">Hướng dẫn giải</div>a) $0&lt;1/n!\le1/n\to0$.<br>b) Trong $n!/n^n=\prod_{k=1}^n(k/n)$, có $m=\lfloor n/2\rfloor$ thừa số đầu không vượt $1/2$, các thừa số khác không vượt 1. Do đó $0&lt;n!/n^n\le2^{-m}\le1/(m+1)\to0$ (dùng $2^m\ge1+m$). Cả hai giới hạn bằng 0.</div></div><h2 class="section-title">4. Dãy đơn điệu và số e</h2><div class="exercise-card"><span class="badge">Bài 13 · Xét đơn điệu và giới hạn</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Xét tính đơn điệu, bị chặn và giới hạn của a) $n/(n+1)$; b) $1/n$; c) $n$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol13" onclick="toggleSolution('sol13', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol13"><div class="solution-title">Hướng dẫn giải</div>a) Tăng vì hiệu hai số hạng liên tiếp bằng $1/((n+1)(n+2))&gt;0$; bị chặn bởi $1/2$ và 1; giới hạn 1.<br>b) Giảm, $0&lt;1/n\le1$; giới hạn 0.<br>c) Tăng nhưng không bị chặn trên; không hội tụ hữu hạn, tiến ra $+\infty$.</div></div><div class="exercise-card"><span class="badge">Bài 14 · Chứng minh định lý đơn điệu</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Chứng minh dãy tăng bị chặn trên hội tụ về sup của tập giá trị. Phát biểu và chứng minh trường hợp dãy giảm.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol14" onclick="toggleSolution('sol14', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol14"><div class="solution-title">Hướng dẫn giải</div>Đặt $L=\sup\{a_n\}$. Với $\varepsilon&gt;0$, có $a_N&gt;L-\varepsilon$ vì $L-\varepsilon$ không là cận trên. Với $n\ge N$: $L-\varepsilon&lt;a_N\le a_n\le L$, suy ra hội tụ.<br>Nếu dãy giảm, đặt $l=\inf\{a_n\}$. Có $a_N&lt;l+\varepsilon$; khi $n\ge N$, $l\le a_n\le a_N&lt;l+\varepsilon$, nên $a_n\to l$.</div></div><div class="exercise-card"><span class="badge">Bài 15 · Dãy hình học</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Chứng minh $q^n\to0$ khi $0&lt;q&lt;1$. Suy ra kết quả khi $-1&lt;q&lt;0$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol15" onclick="toggleSolution('sol15', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol15"><div class="solution-title">Hướng dẫn giải</div>Đặt $c=1/q-1&gt;0$. Bernoulli cho $(1+c)^n\ge1+nc$, nên $0&lt;q^n\le1/(1+nc)\to0$. Nếu $-1&lt;q&lt;0$, áp dụng kết quả với $|q|$ để có $|q^n|\to0$, do đó $q^n\to0$.</div></div><div class="exercise-card"><span class="badge">Bài 16 · Số e và sai số xấp xỉ</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Đặt $u_n=(1+1/n)^n$, $v_n=(1+1/n)^{n+1}$. Biết $(u_n)$ tăng, $(v_n)$ giảm và $u_n&lt;v_n$, chứng minh hai dãy có cùng giới hạn. Tìm một $n$ bảo đảm $0&lt;e-u_n&lt;0{,}01$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol16" onclick="toggleSolution('sol16', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol16"><div class="solution-title">Hướng dẫn giải</div>$2\le u_n&lt;v_n\le4$, nên cả hai dãy hội tụ. $v_n-u_n=u_n/n\le4/n\to0$ nên hai giới hạn bằng nhau, ký hiệu $e$. Vì hai dãy đơn điệu nghiêm ngặt, $u_n&lt;e&lt;v_n$. Suy ra $0&lt;e-u_n&lt;v_n-u_n\le4/n$. Chọn $n=401$ là đủ.</div></div><h2 class="section-title">5. Dãy truy hồi</h2><div class="exercise-card"><span class="badge">Bài 17 · Số thập phân tuần hoàn</span><p class="source-note">Bài tập dãy số trong tài liệu học phần</p><div class="problem-statement">Cho $a_n=1,\underbrace{55\ldots5}_{n\text{ chữ số }5}$. Chứng minh hội tụ và tính giới hạn bằng hệ thức truy hồi.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol17" onclick="toggleSolution('sol17', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol17"><div class="solution-title">Hướng dẫn giải</div>$a_{n+1}-a_n=5\cdot10^{-(n+1)}&gt;0$ và $a_n&lt;2$, nên hội tụ. Vì $a_{n+1}=a_n/10+7/5$, giới hạn $L$ thỏa $L=L/10+7/5$, suy ra $L=14/9$. Kiểm tra: $a_n=14/9-(5/9)10^{-n}$.</div></div><div class="exercise-card"><span class="badge">Bài 18 · Căn lồng nhau</span><p class="source-note">Giáo trình: Bài 6.1.14</p><div class="problem-statement">$a_1=\sqrt2$, $a_{n+1}=\sqrt{2+a_n}$. Chứng minh dãy tăng, bị chặn và tính giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol18" onclick="toggleSolution('sol18', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol18"><div class="solution-title">Hướng dẫn giải</div>Quy nạp: $0&lt;a_1&lt;2$; nếu $0&lt;a_n&lt;2$ thì $0&lt;a_{n+1}&lt;2$. $a_2&gt;a_1$; nếu $a_n&gt;a_{n-1}$ thì $a_{n+1}=\sqrt{2+a_n}&gt;\sqrt{2+a_{n-1}}=a_n$. Vậy dãy tăng, bị chặn trên, hội tụ về $L&gt;0$. Từ $a_{n+1}^2=2+a_n$ được $L^2=L+2$, nên $L=2$.</div></div><div class="exercise-card"><span class="badge">Bài 19 · Truy hồi bậc hai</span><p class="source-note">Giáo trình: Bài 6.1.15</p><div class="problem-statement">$a_1=5/2$, $a_{n+1}=(a_n^2+6)/5$. Chứng minh hội tụ và tìm giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol19" onclick="toggleSolution('sol19', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol19"><div class="solution-title">Hướng dẫn giải</div>Khoảng $(2,5/2]$ được bảo toàn vì $2&lt;(x^2+6)/5\le49/20&lt;5/2$ khi $2&lt;x\le5/2$. Quy nạp có $2&lt;a_n\le5/2$. Hiệu $a_{n+1}-a_n=(a_n-2)(a_n-3)/5&lt;0$, nên dãy giảm và hội tụ. Giới hạn thuộc $[2,5/2]$ và thỏa $(L-2)(L-3)=0$, do đó $L=2$.</div></div><div class="exercise-card"><span class="badge">Bài 20 · Truy hồi phân thức</span><p class="source-note">Bài tập dãy số trong tài liệu học phần; yêu cầu đơn điệu được hiệu chỉnh</p><div class="problem-statement">$a_1=2$, $a_{n+1}=1/(3-a_n)$. Chứng minh $0&lt;a_n\le2$, xác định chiều đơn điệu và tính giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol20" onclick="toggleSolution('sol20', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol20"><div class="solution-title">Hướng dẫn giải</div>Đặt $r=(3-\sqrt5)/2$, $s=(3+\sqrt5)/2$. Vì $r&lt;2&lt;s$, quy nạp trên khoảng $(r,2]$: nếu $r&lt;a_n\le2$ thì $r=1/(3-r)&lt;a_{n+1}\le1&lt;2$. Do đó mọi mẫu đều dương. Hiệu $a_{n+1}-a_n=(a_n-r)(a_n-s)/(3-a_n)&lt;0$, nên dãy giảm, hội tụ về $L\in[r,2]$. Phương trình $L=1/(3-L)$ có nghiệm $r,s$, chọn $L=r$.</div></div><div class="exercise-card"><span class="badge">Bài 21 · Xấp xỉ căn 2</span><p class="source-note">Bài tập dãy số trong tài liệu học phần</p><div class="problem-statement">$a_1=10$, $a_{n+1}=a_n/2+1/a_n$. Chứng minh hội tụ và tính giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol21" onclick="toggleSolution('sol21', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol21"><div class="solution-title">Hướng dẫn giải</div>Với $x&gt;0$, $x/2+1/x-\sqrt2=(x-\sqrt2)^2/(2x)\ge0$. Từ $a_1\ge\sqrt2$ suy ra $a_n\ge\sqrt2$ với mọi $n$. Khi đó $a_{n+1}-a_n=(2-a_n^2)/(2a_n)\le0$. Dãy giảm và bị chặn dưới, nên hội tụ về $L\ge\sqrt2&gt;0$. Lấy giới hạn được $L=L/2+1/L$, do đó $L=\sqrt2$.</div></div><div class="exercise-card"><span class="badge">Bài 22 · Hội tụ khi không đơn điệu</span><p class="source-note">Bài tập dãy số trong tài liệu học phần</p><div class="problem-statement">$a_1=1$, $a_{n+1}=3+1/a_n$. Chứng minh hội tụ và tính giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol22" onclick="toggleSolution('sol22', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol22"><div class="solution-title">Hướng dẫn giải</div>$a_2=4$; quy nạp được $3&lt;a_n\le4$ với $n\ge2$. Đặt $L=(3+\sqrt{13})/2&gt;3$, thỏa $L=3+1/L$. Với $n\ge2$: $|a_{n+1}-L|=|a_n-L|/(a_nL)\le|a_n-L|/9$. Suy ra $|a_n-L|\le9^{-(n-2)}|4-L|\to0$, nên $a_n\to L$. Sai số đổi dấu sau mỗi bước, bởi $a_{n+1}-L=-(a_n-L)/(a_nL)$; toàn dãy không đơn điệu.</div></div><div class="exercise-card"><span class="badge">Bài 23 · Điểm cố định kép</span><p class="source-note">Giáo trình: Bài 6.1.16</p><div class="problem-statement">$a_1=0$, $a_{n+1}=a_n^2+1/4$. Xét hội tụ và tìm giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol23" onclick="toggleSolution('sol23', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol23"><div class="solution-title">Hướng dẫn giải</div>Quy nạp có $0\le a_n&lt;1/2$: nếu đúng tại $n$ thì $1/4\le a_{n+1}&lt;1/2$. Hiệu $a_{n+1}-a_n=(a_n-1/2)^2&gt;0$. Dãy tăng và bị chặn nên hội tụ về $L\in[0,1/2]$. $L=L^2+1/4$ cho $(L-1/2)^2=0$, nên $L=1/2$.</div></div><div class="exercise-card"><span class="badge">Bài 24 · Một dãy căn khác</span><p class="source-note">Giáo trình: Bài 6.1.17</p><div class="problem-statement">$a_1=0$, $a_{n+1}=\sqrt{3a_n+4}$. Chứng minh hội tụ và tìm giới hạn.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol24" onclick="toggleSolution('sol24', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol24"><div class="solution-title">Hướng dẫn giải</div>Quy nạp: $0\le a_1&lt;4$; nếu $0\le a_n&lt;4$ thì $0&lt;a_{n+1}&lt;4$. $a_2=2&gt;a_1$; do hàm $x\mapsto\sqrt{3x+4}$ tăng trên $[0,4]$, quy nạp có $a_{n+1}&gt;a_n$. Dãy hội tụ về $L\ge0$. Từ $a_{n+1}^2=3a_n+4$ được $(L-4)(L+1)=0$, chọn $L=4$.</div></div><h2 class="section-title">6. Bổ sung: giới hạn vô cùng</h2><div class="exercise-card"><span class="badge">Bài 25 · Phân thức và đa thức</span><p class="source-note">Giáo trình: Bài 1.1.15(c–f)</p><div class="problem-statement">Tìm a) $\lim(3n^2-2n+1)/(5n-3)$; b) $\lim(3n^2-2n-1)$; c) $\lim(-5n^2+2n+3)$; d) $\lim(-n^3+4n^2+1)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol25" onclick="toggleSolution('sol25', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol25"><div class="solution-title">Hướng dẫn giải</div>a) Biểu thức bằng $n(3-2/n+1/n^2)/(5-3/n)$; thừa số thứ hai tiến về $3/5&gt;0$, nên giới hạn $+\infty$.<br>b) Bằng $n^2(3-2/n-1/n^2)$, hệ số trong ngoặc tiến về 3: $+\infty$.<br>c) Bằng $n^2(-5+2/n+3/n^2)$, hệ số tiến về −5: $-\infty$.<br>d) Bằng $n^3(-1+4/n+1/n^3)$, hệ số tiến về −1: $-\infty$. Các kết luận dùng việc hệ số được chặn cách 0 từ một chỉ số đủ lớn.</div></div></div><script>
+function syncMaster(){const all=Array.from(document.querySelectorAll('.solution-box')).every(b=>b.classList.contains('show'));document.getElementById('masterBtn').textContent=all?'Ẩn tất cả hướng dẫn':'Hiện tất cả hướng dẫn';}
+function toggleSolution(id,button){const box=document.getElementById(id);const open=box.classList.toggle('show');button.setAttribute('aria-expanded',String(open));button.textContent=open?'Ẩn hướng dẫn giải':'Xem hướng dẫn giải';syncMaster();if(open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise([box]).catch(console.error);}
+function toggleAllSolutions(){const boxes=Array.from(document.querySelectorAll('.solution-box'));const open=!boxes.every(b=>b.classList.contains('show'));boxes.forEach(b=>b.classList.toggle('show',open));document.querySelectorAll('.toggle-btn').forEach(b=>{b.setAttribute('aria-expanded',String(open));b.textContent=open?'Ẩn hướng dẫn giải':'Xem hướng dẫn giải';});syncMaster();if(open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise(boxes).catch(console.error);}
+</script></body></html>
