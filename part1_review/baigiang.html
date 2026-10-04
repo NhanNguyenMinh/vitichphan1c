@@ -258,7 +258,17 @@
         #fullscreenBtn { font-size: 14px; padding: 10px 12px; }
         @media(max-width: 760px) { .nav-bar { padding: 8px; gap: 8px; } .home-link { order: 4; } #fullscreenBtn { order: 5; margin-left: auto; } .slide-counter { flex: 1; text-align: center; } }
         @media print { .screen-status { display: none; } }
-    </style>
+    
+/* Fit the visible mobile viewport; presentation fallback keeps exit controls available. */
+body{height:100vh;height:100dvh}
+body.presentation-mode .deck-container{padding:0}
+body.presentation-mode .slide{max-width:none;border-radius:0;padding:16px}
+body.presentation-mode .progress-container{height:4px}
+body.presentation-mode .nav-bar{padding:6px 10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+body.presentation-mode .home-link{display:none}
+.screen-status{pointer-events:none;font-size:16px}
+@media(max-width:760px){.nav-bar{padding-bottom:max(8px,env(safe-area-inset-bottom))}}
+</style>
 </head>
 <body>
 
@@ -627,24 +637,58 @@ $$\boxed{\inf A=\min A=-1,\qquad\sup A=\max A=\frac12.}$$</div>
         slideSelect.addEventListener('change', () => { currentSlide = Number(slideSelect.value); updateSlide(); });
         const fullscreenBtn = document.getElementById('fullscreenBtn');
         const screenStatus = document.getElementById('screenStatus');
+        let fullscreenBusy = false;
+        let screenNoticeTimer;
+        function nativeFullscreenElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
         function syncFullscreen() {
-            const active = Boolean(document.fullscreenElement);
-            fullscreenBtn.textContent = active ? '⛶ Thoát toàn màn hình' : '⛶ Toàn màn hình';
-            fullscreenBtn.setAttribute('aria-pressed', String(active));
+            const native = Boolean(nativeFullscreenElement());
+            if (native) document.body.classList.remove('presentation-mode');
+            const expanded = document.body.classList.contains('presentation-mode');
+            fullscreenBtn.textContent = native ? '⛶ Thoát toàn màn hình' : expanded ? '↙ Thu gọn' : '⛶ Toàn màn hình';
+            fullscreenBtn.setAttribute('aria-pressed', String(native || expanded));
+        }
+        function usePresentationMode() {
+            document.body.classList.add('presentation-mode');
+            screenStatus.textContent = 'Đã mở rộng vùng trình chiếu. Trình duyệt này không cho phép toàn màn hình; thanh địa chỉ có thể vẫn hiện.';
+            clearTimeout(screenNoticeTimer);
+            screenNoticeTimer = setTimeout(() => { screenStatus.textContent = ''; }, 6000);
         }
         async function toggleFullscreen() {
+            if (fullscreenBusy) return;
+            fullscreenBusy = true;
+            clearTimeout(screenNoticeTimer);
             screenStatus.textContent = '';
             try {
-                if (document.fullscreenElement) await document.exitFullscreen();
-                else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
-                else throw new Error('Fullscreen unavailable');
-            } catch (error) {
-                screenStatus.textContent = 'Không thể bật toàn màn hình trong cửa sổ này. Hãy mở bài giảng ở tab riêng hoặc dùng F11 trên máy tính.';
+                if (nativeFullscreenElement()) {
+                    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+                    if (exit) await exit.call(document);
+                } else if (document.body.classList.contains('presentation-mode')) {
+                    document.body.classList.remove('presentation-mode');
+                } else {
+                    const el = document.documentElement;
+                    const request = el.requestFullscreen || el.webkitRequestFullscreen;
+                    const enabled = el.requestFullscreen ? document.fullscreenEnabled : document.webkitFullscreenEnabled;
+                    if (request && enabled !== false) {
+                        try { await request.call(el); } catch (_) { usePresentationMode(); }
+                    } else usePresentationMode();
+                }
+            } catch (_) {
+                screenStatus.textContent = 'Hãy dùng nút thoát toàn màn hình của trình duyệt.';
+            } finally {
+                fullscreenBusy = false;
+                syncFullscreen();
             }
-            syncFullscreen();
         }
         fullscreenBtn.addEventListener('click', toggleFullscreen);
         document.addEventListener('fullscreenchange', syncFullscreen);
+        document.addEventListener('webkitfullscreenchange', syncFullscreen);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.body.classList.contains('presentation-mode')) {
+                document.body.classList.remove('presentation-mode');
+                screenStatus.textContent = '';
+                syncFullscreen();
+            }
+        });
         document.addEventListener('keydown', e => {
             if (e.altKey || e.ctrlKey || e.metaKey || e.target.closest('select, input, textarea, [contenteditable="true"]')) return;
             if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }

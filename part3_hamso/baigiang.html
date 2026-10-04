@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hàm số, giới hạn và liên tục · Vi tích phân 1C</title>
+    
+    <!-- MathJax 3: hiển thị công thức toán trong bài giảng -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --border: #cbd5e1;
+            --highlight-bg: #eff6ff;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            /* Font chữ PowerPoint chuẩn hỗ trợ 100% tiếng Việt */
+            font-family: 'Segoe UI', Arial, Calibri, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #f59e0b);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Viewport */
+        .deck-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 88vh;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px 50px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .slide.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Headers & Typography */
+        .slide-header {
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 14px;
+            margin-bottom: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-title {
+            color: var(--primary);
+            font-size: 32px; /* Tăng từ 26px lên 32px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-category {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        /* Content Boxes */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+            font-size: 18px; /* Tăng kích thước chữ tổng thể */
+            line-height: 1.6;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 20px; /* Tăng từ 16px lên 20px */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .box-realworld {
+            background-color: var(--highlight-bg);
+            border-left: 5px solid var(--primary-light);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-math {
+            background-color: var(--success-bg);
+            border-left: 5px solid var(--success-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-warning {
+            background-color: var(--danger-bg);
+            border-left: 5px solid var(--danger-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Lists & Tables */
+        ul, ol { margin-top: 8px; padding-left: 26px; }
+        li { margin-bottom: 10px; font-size: 18px; line-height: 1.6; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 17px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            text-align: center;
+        }
+        th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
+
+        /* Phóng to công thức toán inline */
+        mjx-container {
+            font-size: 105% !important;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background-color: #1e293b;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background-color: var(--primary); }
+        .nav-btn:disabled { background-color: #475569; cursor: not-allowed; }
+
+        .slide-counter { font-size: 17px; font-weight: 700; }
+    
+        .deck-container { min-height: 0; padding: 12px 20px; overflow: hidden; }
+        .slide { height: 100%; max-height: 100%; padding: 26px 38px; }
+        .slide-header { gap: 15px; margin-bottom: 18px; }
+        .slide-title { font-size: 29px; }
+        .slide-category { flex-shrink: 0; }
+        .card, .box-math, .box-realworld, .box-warning { padding: 15px 18px; }
+        .card p { margin: 8px 0; }
+        .book-figure, .diagram { margin: 0 0 16px; padding: 14px; background: white; border: 1px solid var(--border); border-radius: 12px; }
+        .book-figure img { display: block; max-width: 100%; max-height: 320px; width: auto; margin: auto; object-fit: contain; }
+        .mapping-figure img { max-height: 385px; }
+        figcaption, .source-note { color: #475569; font-size: 13px; line-height: 1.5; margin-top: 10px; }
+        .diagram svg { display: block; width: 100%; max-height: 280px; }
+        .prompt { padding: 12px 18px; background: #fff7ed; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 18px; }
+        .switches { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+        .switches button { border: 1px solid #93c5fd; border-radius: 8px; padding: 9px 12px; color: #1e3a8a; background: #eff6ff; cursor: pointer; font: inherit; }
+        .switches button[aria-pressed="true"] { color: white; background: #1d4ed8; }
+        button:focus-visible, a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        .nav-bar { gap: 12px; padding: 12px 24px; flex-shrink: 0; }
+        .progress-container { flex-shrink: 0; }
+        .slide-counter select { max-width: 260px; font: inherit; padding: 5px; border-radius: 4px; }
+        mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+        @media(max-width: 760px) { .grid-2 { grid-template-columns: 1fr; gap: 8px; } .slide { padding: 18px; } .deck-container { padding: 8px; } .slide-header { flex-wrap: wrap; } .slide-title { font-size: 24px; } .nav-btn { padding: 9px; font-size: 14px; } .slide-counter select { max-width: 135px; font-size: 13px; } .card, li, .box-math, .box-realworld, .box-warning { font-size: 17px; } }
+        @media print { body { height: auto; overflow: visible; background: white; } .slide { display: block !important; height: auto; max-height: none; break-after: page; overflow: visible; box-shadow: none; } .deck-container { display: block; overflow: visible; } .nav-bar,.progress-container,.switches { display: none; } }
+input[type="range"] { width: min(100%, 340px); accent-color: #2563eb; vertical-align: middle; } .source-note { margin-bottom: 8px; }
+
+        .home-link { color: white; font-size: 14px; white-space: nowrap; }
+        .screen-status:empty { display: none; }
+        .screen-status { position: fixed; bottom: 90px; left: 20px; right: 20px; z-index: 20; padding: 14px; background: #fff7ed; color: #7c2d12; border: 1px solid #fdba74; border-radius: 8px; }
+        :fullscreen { background: #0f172a; }
+        .nav-bar { flex-wrap: wrap; }
+        #fullscreenBtn { font-size: 14px; padding: 10px 12px; }
+        @media(max-width: 760px) { .nav-bar { padding: 8px; gap: 8px; } .home-link { order: 4; } #fullscreenBtn { order: 5; margin-left: auto; } .slide-counter { flex: 1; text-align: center; } }
+        @media print { .screen-status { display: none; } }
+     .v2-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v2-grid svg{width:100%;height:auto}.v2-reveal{background:#eff6ff;padding:12px 16px;border-radius:8px;margin-top:12px}.v2-reveal summary{cursor:pointer;font-weight:700;color:#1e3a8a}.v2-grid figure{margin:0}.v2-grid figcaption{font-weight:600}#v2Squeeze,#v2Cobweb{display:block;width:100%;max-height:280px} @media(max-width:600px){.v2-grid{grid-template-columns:1fr}} 
+/* Classroom projection typography */
+.slide{max-width:1440px;padding:24px 34px;font-size:26px;line-height:1.45}
+.slide-title{font-size:36px;line-height:1.2}.slide-category{font-size:18px}
+.card,.box-math,.box-realworld,.box-warning,.prompt,.slide li,.slide table{font-size:26px;line-height:1.45}
+.card h3{font-size:28px}.slide p,.slide label,.slide output,.v2-reveal{font-size:inherit}
+.slide figcaption,.slide .source-note{font-size:18px}.slide-header{margin-bottom:16px}
+.card,.box-math,.box-realworld,.box-warning{padding:12px 16px;margin-bottom:12px}
+.slide th,.slide td{padding:8px 12px}.slide svg text{font-size:20px}
+.v2-grid svg text{font-size:16px}.v2-reveal{padding:10px 14px}
+@media(max-width:760px){.slide{font-size:20px;padding:18px}.slide-title{font-size:28px}.card,.box-math,.box-realworld,.box-warning,.prompt,.slide li,.slide table{font-size:20px}.card h3{font-size:23px}.slide figcaption,.slide .source-note{font-size:16px}}
+
+@media(min-width:761px){#v2Compare svg{max-height:140px}#v2Compare figcaption{margin-top:0}}
+
+/* Fit the visible mobile viewport; presentation fallback keeps exit controls available. */
+body{height:100vh;height:100dvh}
+body.presentation-mode .deck-container{padding:0}
+body.presentation-mode .slide{max-width:none;border-radius:0;padding:16px}
+body.presentation-mode .progress-container{height:4px}
+body.presentation-mode .nav-bar{padding:6px 10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+body.presentation-mode .home-link{display:none}
+.screen-status{pointer-events:none;font-size:16px}
+@media(max-width:760px){.nav-bar{padding-bottom:max(8px,env(safe-area-inset-bottom))}}
+.p3plot{display:block;width:100%;max-height:270px}.p3plot text{font-size:20px}.v2-reveal summary:focus-visible{outline:3px solid #f59e0b}</style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="deck-container">
+
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm số một biến</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><strong>Phần 3 · Giới hạn và sự liên tục</strong><p>Hiểu hàm số qua miền xác định và đồ thị; tính và chứng minh giới hạn; khảo sát liên tục và vận dụng các định lý.</p></div><div class="card">Lộ trình: ánh xạ → hàm số → giới hạn → liên tục → ứng dụng. Bài học tiếp nối dãy số; chưa dùng đạo hàm hay quy tắc L’Hôpital.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Khởi động: ba câu hỏi</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><ol><li>$f(x)=x^2$ có hàm ngược trên $\mathbb R$ không?</li><li>$f$ không xác định tại 1 thì có thể có giới hạn tại 1 không?</li><li>Hàm liên tục trên $(0,1)$ có nhất thiết đạt giá trị lớn nhất không?</li></ol></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>1) Không, vì $f(1)=f(-1)$. 2) Có, ví dụ $(x^2-1)/(x-1)\to2$. 3) Không, ví dụ $f(x)=x$ trên $(0,1)$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Ánh xạ: một đầu vào, một đầu ra</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$f:A\to B$ gán cho mỗi $x\in A$ đúng một phần tử $f(x)\in B$. $A$ là miền xác định; $B$ là tập đích; $f(A)=\{f(x):x\in A\}$ là tập ảnh.</div><div class="card">Ví dụ $f:\mathbb R\to\mathbb R$, $f(x)=x^2$: tập đích là $\mathbb R$ nhưng tập ảnh chỉ là $[0,+\infty)$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Một đầu vào có hai đầu ra khác nhau thì không phải ánh xạ; nhiều đầu vào chung một đầu ra vẫn có thể là ánh xạ.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Đơn ánh, toàn ánh, song ánh</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><ul><li>Đơn ánh: $f(x_1)=f(x_2)\Rightarrow x_1=x_2$.</li><li>Toàn ánh: với mọi $y\in B$, có $x\in A$ sao cho $f(x)=y$.</li><li>Song ánh: vừa đơn ánh vừa toàn ánh; khi đó có $f^{-1}:B\to A$.</li></ul></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>$x^2:\mathbb R\to\mathbb R$ không đơn ánh, không toàn ánh. $x^2:[0,+\infty)\to[0,+\infty)$ là song ánh. Miền và tập đích là một phần của bài toán.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm số và miền xác định</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Hàm số thực một biến là ánh xạ $f:D\to\mathbb R$ với $D\subset\mathbb R$. Khi cho bằng công thức, cần nêu miền xét hoặc tìm miền tự nhiên.</div><div class="card">$$f(x)=\frac{\sqrt{2-x}}{x-1}:\quad 2-x\ge0,\quad x\ne1.$$ Do đó $D=(-\infty,1)\cup(1,2]$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Tự làm: $\ln(x-1)/\sqrt{4-x}$ có miền $(1,4)$. Mẫu căn phải dương; đối số logarit phải dương.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Bốn cách biểu diễn hàm số</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Một hàm có thể được mô tả bằng lời, bảng, đồ thị hoặc công thức. Ví dụ giả định: phí dịch vụ là 20 nghìn đồng cho giờ đầu, cộng 10 nghìn cho mỗi giờ tiếp theo đã bắt đầu.</div><div class="card">Với $t&gt;0$: $C(t)=20+10(\lceil t\rceil-1)$ (nghìn đồng). $C(0{,}5)=20$, $C(1)=20$, $C(1{,}1)=30$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Bảng vài giá trị không xác định duy nhất một hàm trên toàn khoảng. Công thức mô hình cần đi kèm giả thiết; ví dụ này không phải bảng giá thực tế.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Phép toán và miền xác định</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$(f\pm g)(x)=f(x)\pm g(x)$, $(fg)(x)=f(x)g(x)$. Miền là $D_f\cap D_g$. Với $f/g$, loại thêm các điểm có $g(x)=0$.</div><div class="card">$f(x)=\sqrt{x}$, $g(x)=x-1$: miền của $f+g$ là $[0,+\infty)$, miền của $f/g$ là $[0,+\infty)\setminus\{1\}$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>$(x^2-1)/(x-1)$ và $x+1$ trùng giá trị khi $x\ne1$, nhưng không phải cùng một hàm nếu dùng hai miền tự nhiên khác nhau.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm hợp: chú ý thứ tự</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$(f\circ g)(x)=f(g(x)),\qquad D_{f\circ g}=\{x\in D_g:g(x)\in D_f\}.$$</div><div class="card">$f(x)=x^2$, $g(x)=x-3$: $(f\circ g)(x)=(x-3)^2$, còn $(g\circ f)(x)=x^2-3$. Nói chung không giao hoán.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Quy trình: tính hàm bên trong → kiểm tra giá trị đó thuộc miền hàm bên ngoài → thay vào công thức.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm hợp có căn: tìm miền từng lớp</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Cho $f(x)=\sqrt x$, $g(x)=\sqrt{2-x}$.<table><tr><th>Hàm hợp</th><th>Miền xác định</th></tr><tr><td>$f\circ g=\sqrt[4]{2-x}$</td><td>$(-\infty,2]$</td></tr><tr><td>$g\circ f=\sqrt{2-\sqrt x}$</td><td>$[0,4]$</td></tr><tr><td>$f\circ f=\sqrt[4]x$</td><td>$[0,+\infty)$</td></tr><tr><td>$g\circ g=\sqrt{2-\sqrt{2-x}}$</td><td>$[-2,2]$</td></tr></table></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Hàng cuối: $x\le2$ và $\sqrt{2-x}\le2$, tức $x\ge-2$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm ngược: đảo vai trò đầu vào và đầu ra</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Nếu $f:D\to f(D)$ đơn ánh thì $f^{-1}$ tồn tại. $y=f(x)\Leftrightarrow x=f^{-1}(y)$. Ký hiệu $f^{-1}$ không phải $1/f$.</div><div class="card">$f(x)=\sqrt{-x-1}$ có $D=(-\infty,-1]$, ảnh $[0,+\infty)$. Từ $y^2=-x-1$, suy ra $f^{-1}(y)=-y^2-1$, $y\ge0$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Đường thẳng đứng kiểm tra đồ thị của hàm số; đường thẳng ngang kiểm tra tính đơn ánh.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Đồ thị hàm ngược: phép đối xứng</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">Xét $f(x)=x^2$ trên $[0,2]$, hàm ngược $f^{-1}(x)=\sqrt x$ trên $[0,4]$. Hai điểm $(t,t^2)$ và $(t^2,t)$ đối xứng qua $y=x$.</div><label for="inverseT">t = <output id="inverseOut">1</output></label> <input id="inverseT" type="range" min="0" max="2" step="0.05" value="1"><svg id="inversePlot" class="p3plot" viewBox="0 0 900 290" role="img" aria-label="Đồ thị x bình phương và căn x đối xứng qua đường y bằng x"></svg></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm sơ cấp: nhớ miền xác định</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><table><tr><th>Hàm</th><th>Miền xét</th></tr><tr><td>Đa thức; phân thức $P/Q$</td><td>$\mathbb R$; các $x$ với $Q(x)\ne0$</td></tr><tr><td>$x^\alpha$ với $\alpha$ thực</td><td>Luôn xác định khi $x&gt;0$; mở rộng tùy số mũ</td></tr><tr><td>$a^x$, $a&gt;0$</td><td>$\mathbb R$</td></tr><tr><td>$\log_a x$, $a&gt;0$, $a\ne1$</td><td>$(0,+\infty)$</td></tr></table></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>$a=1$ cho hàm mũ hằng, không có logarit ngược. Khi $a&gt;1$, hàm mũ và logarit tăng; khi $0&lt;a&lt;1$, chúng giảm.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Lượng giác ngược: phải chọn nhánh</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><table><tr><th>Hàm ngược</th><th>Miền</th><th>Tập giá trị</th></tr><tr><td>$\arcsin x$</td><td>$[-1,1]$</td><td>$[-\pi/2,\pi/2]$</td></tr><tr><td>$\arccos x$</td><td>$[-1,1]$</td><td>$[0,\pi]$</td></tr><tr><td>$\arctan x$</td><td>$\mathbb R$</td><td>$(-\pi/2,\pi/2)$</td></tr></table></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>$\arcsin(\sin(3\pi/4))=\pi/4$, không phải $3\pi/4$. $\arctan(1)=\pi/4$. Dùng radian trong các giới hạn lượng giác.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Điểm tụ: có thể tiến đến từ miền</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$a$ là điểm tụ của $D$ nếu với mọi $\delta&gt;0$, có $x\in D$ thỏa $0&lt;|x-a|&lt;\delta$. Không bắt buộc $a\in D$.</div><div class="card">$D=(0,1)$ có tập điểm tụ $[0,1]$. $D=\{1/n:n\ge1\}$ có điểm tụ duy nhất 0. Với $D=\{0\}\cup(1,2)$, 0 là điểm cô lập, không phải điểm tụ.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Điều kiện điểm tụ bảo đảm luôn có điểm khác a đủ gần a để kiểm tra giới hạn.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn khác với giá trị tại điểm</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">$f(x)=x+2$ khi $x\ne1$, còn $f(1)=c$. Khi $x\to1$, $f(x)\to3$ bất kể $c$. Thay đổi $c$ để thấy giới hạn không đổi.</div><label for="holeC">f(1) = <output id="holeOut">1</output></label> <input id="holeC" type="range" min="0" max="4" step="0.5" value="1"><svg id="holePlot" class="p3plot" viewBox="0 0 900 280" role="img" aria-label="Đồ thị có lỗ tại điểm một ba và giá trị riêng tại x bằng một"></svg></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Định nghĩa giới hạn ε–δ</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Cho $a$ là điểm tụ của $D$. Ta viết $\lim_{x\to a}f(x)=L$ nếu $$\forall\varepsilon&gt;0,\ \exists\delta&gt;0,\ \forall x\in D:\quad 0&lt;|x-a|&lt;\delta\Rightarrow|f(x)-L|&lt;\varepsilon.$$</div><div class="card">ε là độ chính xác đầu ra được yêu cầu; δ là mức gần đầu vào ta chọn. δ có thể phụ thuộc ε, nhưng không được chọn riêng cho từng x.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Điều kiện $0&lt;|x-a|$ loại chính điểm $a$. Vì vậy định nghĩa không yêu cầu $f(a)=L$, thậm chí không yêu cầu $f(a)$ tồn tại.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Điều chỉnh ε: tìm một δ phù hợp</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">$f(x)=2x-1$, $a=2$, $L=3$. Vì $|f(x)-3|=2|x-2|$, chọn $\delta=\varepsilon/2$.</div><label for="epsilon3">ε = <output id="eps3Out">1</output></label> <input id="epsilon3" type="range" min="0.1" max="2" step="0.1" value="1"><svg id="eps3Plot" class="p3plot" viewBox="0 0 900 280" role="img" aria-label="Dải epsilon đầu ra và delta đầu vào cho hàm 2x trừ 1"></svg><p id="eps3Text"></p></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh ε–δ: hàm bậc hai</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Chứng minh $\lim_{x\to2}x^2=4$. Ta có $|x^2-4|=|x-2||x+2|$.</div><div class="card">Chọn $\delta=\min\{1,\varepsilon/5\}$. Nếu $0&lt;|x-2|&lt;\delta$, thì $1&lt;x&lt;3$ nên $|x+2|&lt;5$. Do đó $$|x^2-4|&lt;5|x-2|&lt;5\delta\le\varepsilon.$$</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Hai nhiệm vụ: chặn nhân tử phụ x+2 bằng một hằng số, rồi khống chế nhân tử nhỏ x−2.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn là duy nhất</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Giả sử có hai giới hạn $L\ne M$. Chọn $\varepsilon=|L-M|/3$ và lấy $\delta$ nhỏ hơn hoặc bằng hai ngưỡng tương ứng.</div><div class="card">Vì $a$ là điểm tụ, chọn được $x\in D$ với $0&lt;|x-a|&lt;\delta$. Khi đó $$|L-M|\le|L-f(x)|+|f(x)-M|&lt;\frac23|L-M|,$$ mâu thuẫn. Vậy giới hạn, nếu tồn tại, là duy nhất.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn trái và phải</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$\lim_{x\to a^-}f(x)=L$: dùng điều kiện $0&lt;a-x&lt;\delta$.<br>$\lim_{x\to a^+}f(x)=L$: dùng điều kiện $0&lt;x-a&lt;\delta$.</div><div class="card">Khi miền có điểm tiến đến $a$ từ cả hai phía: $$\lim_{x\to a}f(x)=L\iff\lim_{x\to a^-}f(x)=\lim_{x\to a^+}f(x)=L.$$</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Chiều đảo: chọn δ là min của hai ngưỡng trái và phải. Ở biên miền như 0 của √x, chỉ xét phía thuộc miền xác định.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Trị tuyệt đối: tách hai phía</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Với $x\ne0$, $$\frac{\sin x}{|x|}=\begin{cases}\sin x/x,&x&gt;0,\\-\sin x/x,&x&lt;0.\end{cases}$$</div><div class="card">Sử dụng $\sin x/x\to1$: giới hạn phải bằng 1, trái bằng −1. Không tồn tại giới hạn hai phía, dù có thể gán bất kỳ giá trị nào tại 0.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Ví dụ đơn giản hơn: $|x|/x$ bằng 1 ở bên phải và −1 ở bên trái.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Nối với dãy số: tiêu chuẩn tuần tự</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$\lim_{x\to a}f(x)=L$ khi và chỉ khi với mọi dãy $x_n\in D\setminus\{a\}$, $x_n\to a$, ta có $f(x_n)\to L$.</div><div class="card">Chiều thuận: định nghĩa ε–δ kết hợp với $x_n\to a$. Chiều đảo: nếu giới hạn sai, có $\varepsilon_0&gt;0$ và chọn được $0&lt;|x_n-a|&lt;1/n$ nhưng $|f(x_n)-L|\ge\varepsilon_0$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Muốn bác bỏ giới hạn, có thể tìm hai dãy đầu vào cùng tiến đến a nhưng đầu ra tiến đến hai giá trị khác nhau.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Ví dụ không có giới hạn: sin(1/x)</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Chọn $$x_n=\frac1{\pi/2+2\pi n},\qquad y_n=\frac1{3\pi/2+2\pi n}.$$ Cả hai tiến đến 0, nhưng $\sin(1/x_n)=1$, $\sin(1/y_n)=-1$.</div><div class="card">Vì vậy $\lim_{x\to0}\sin(1/x)$ không tồn tại. Trái lại, $x\sin(1/x)\to0$ nhờ biên độ $|x|\to0$.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Các phép toán với giới hạn hữu hạn</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Nếu $f(x)\to A$, $g(x)\to B$ khi $x\to a$, thì $$\alpha f+\beta g\to\alpha A+\beta B,\qquad fg\to AB.$$ Nếu $B\ne0$ thì $f/g\to A/B$.</div><div class="card">Ví dụ $\lim_{x\to2}(3x^2-4x+5)=9$. Với phân thức, chỉ thay trực tiếp khi mẫu tại điểm xét khác 0.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Dạng $0/0$ chưa cho biết kết quả; không áp dụng quy tắc thương khi giới hạn mẫu bằng 0.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chứng minh quy tắc tổng</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Cho $\varepsilon&gt;0$. Chọn $\delta_1$ để $|f(x)-A|&lt;\varepsilon/2$, và $\delta_2$ để $|g(x)-B|&lt;\varepsilon/2$.</div><div class="card">Với $\delta=\min\{\delta_1,\delta_2\}$ và $0&lt;|x-a|&lt;\delta$: $$|(f(x)+g(x))-(A+B)|\le|f(x)-A|+|g(x)-B|&lt;\varepsilon.$$</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Mỗi số hạng được phân một nửa “ngân sách sai số”. Cách chứng minh tương tự quy tắc tổng của dãy số.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Thứ tự và định lý kẹp</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Nếu $g(x)\le f(x)\le h(x)$ gần $a$ (trừ có thể tại $a$), và $g,h\to L$, thì $f\to L$.</div><div class="card"><strong>Chứng minh:</strong> chọn một ngưỡng chung để $L-\varepsilon&lt;g(x)$ và $h(x)&lt;L+\varepsilon$. Suy ra $L-\varepsilon&lt;f(x)&lt;L+\varepsilon$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Bảo toàn thứ tự: nếu $f\le g$ và hai giới hạn tồn tại hữu hạn thì $\lim f\le\lim g$. Dấu nghiêm ngặt có thể mất khi lấy giới hạn.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn lượng giác cơ bản</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Đo góc bằng radian. Với $0&lt;t&lt;\pi/2$, so sánh diện tích trong đường tròn đơn vị cho $\sin t&lt;t&lt;\tan t$. Suy ra $$\cos t&lt;\frac{\sin t}{t}&lt;1.$$</div><div class="card">Khi $t\to0^+$, hai biên tiến đến 1. Vì $\sin(-t)/(-t)=\sin t/t$, kết luận $\lim_{t\to0}\sin t/t=1$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Hệ quả: $\lim_{x\to0}\sin(3x)/(5x)=3/5$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chọn phương pháp: khử nhân tử</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$\lim_{x\to1}\frac{x^3-1}{x^2-1}=\lim_{x\to1}\frac{(x-1)(x^2+x+1)}{(x-1)(x+1)}=\frac32.$$</div><div class="card">Chỉ rút gọn khi x khác 1. Điều đó đủ vì giới hạn chỉ xét lân cận thủng của điểm 1.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Tự làm: $\lim_{x\to2}(x^2-x-2)/(x^2+x-6)=3/5$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chọn phương pháp: nhân liên hợp</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$\lim_{x\to0}\frac{\sqrt{1+x}-1}{x}=\lim_{x\to0}\frac1{\sqrt{1+x}+1}=\frac12.$$</div><div class="card">Tự làm: $\lim_{t\to0}(\sqrt{1+t}-\sqrt{1-t})/t$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Nhân liên hợp: tử thành $2t$, nên giới hạn bằng $2/(1+1)=1$. Kiểm tra miền $-1\le t\le1$ và $t\ne0$ khi rút gọn.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chọn phương pháp: kẹp biên độ</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$|x\sin(1/x)|\le|x|\to0,\qquad |x^2\cos(20\pi x)|\le x^2\to0.$$</div><div class="card">Hàm dao động có thể không có giới hạn, nhưng tích của nó với một biên độ tiến về 0 vẫn có giới hạn 0.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Tự làm: $0\le\sqrt{x}[1+\sin^2(2\pi/x)]\le2\sqrt{x}\to0$ khi $x\to0^+$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giới hạn vô cực và tại vô cực</h2><span class="slide-category">Bổ sung từ giáo trình</span></div><div class="card">$f(x)\to+\infty$ khi $x\to a$ nghĩa là: với mọi $M&gt;0$, có $\delta&gt;0$ sao cho $0&lt;|x-a|&lt;\delta\Rightarrow f(x)&gt;M$.</div><div class="card">$\lim_{x\to+\infty}f(x)=L$: với mọi $\varepsilon&gt;0$, có $R$ để $x&gt;R\Rightarrow|f(x)-L|&lt;\varepsilon$. Các biến thể trái, phải và $-\infty$ được định nghĩa tương tự.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Tại vô cực: xét bậc và dấu</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$\lim_{x\to+\infty}\frac{3x^2+x}{2x^2+1}=\frac32.$$ Chia tử và mẫu cho $x^2$.</div><div class="card">$$\lim_{x\to-\infty}(\sqrt{x^2+1}+x)=\lim_{x\to-\infty}\frac1{\sqrt{x^2+1}-x}=0.$$</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Luôn nhớ $\sqrt{x^2}=|x|$, không luôn bằng $x$. Với $1/x$: tại $0^+$ là $+\infty$, tại $0^-$ là $-\infty$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Liên tục tại một điểm</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Tại điểm tụ $a\in D$, $f$ liên tục nếu $$\lim_{x\to a}f(x)=f(a).$$ Kiểm tra: có giá trị tại điểm → có giới hạn theo miền → hai giá trị bằng nhau.</div><div class="card">Tại điểm cô lập của miền, hàm tự động liên tục theo định nghĩa tương đối trên miền. Tại đầu mút một đoạn, xét giới hạn một phía từ trong đoạn.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>$f(x)=\sqrt{x}$ liên tục tại 0 trên miền $[0,+\infty)$ vì $\lim_{x\to0^+}\sqrt{x}=0$.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Tính liên tục của các phép toán</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Tổng, hiệu, tích của các hàm liên tục tại $a$ đều liên tục tại $a$. Thương liên tục nếu mẫu tại $a$ khác 0.</div><div class="card">Nếu $f$ liên tục tại $a$, $g$ liên tục tại $f(a)$ và hàm hợp xác định gần $a$, thì $g\circ f$ liên tục tại $a$. Các hàm sơ cấp liên tục trên miền xác định của chúng.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Ví dụ $\sqrt{1+\sin^2 x}$ liên tục trên $\mathbb R$. Hàm $1/x$ liên tục trên miền $\mathbb R\setminus\{0\}$, dù không thể mở rộng liên tục tại 0.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Ba kiểu gián đoạn thường gặp</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><table><tr><th>Kiểu</th><th>Dấu hiệu tại điểm xét</th></tr><tr><td>Khử được</td><td>Giới hạn trái và phải hữu hạn, bằng nhau; giá trị tại điểm thiếu hoặc sai</td></tr><tr><td>Bước nhảy</td><td>Hai giới hạn một phía hữu hạn, khác nhau</td></tr><tr><td>Loại hai</td><td>Ít nhất một phía không có giới hạn hữu hạn</td></tr></table></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Ví dụ tại 0: $\sin x/x$ có lỗ khử được; $|x|/x$ có bước nhảy; $1/x$ có vô cực; $\sin(1/x)$ dao động. Với hàm chưa xác định tại 0, hiểu là xét khả năng mở rộng qua điểm đó.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm từng đoạn: xét đúng điểm nối</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$f(x)=\begin{cases}3x+1,&x\le-1,\\x^3-1,&x&gt;-1.\end{cases}$$</div><div class="card">Tại $-1$: giới hạn trái $=-2$, giới hạn phải $=-2$, và $f(-1)=-2$. Hai nhánh đa thức liên tục ngoài điểm nối. Vậy $f$ liên tục trên $\mathbb R$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Không kết luận gián đoạn chỉ vì công thức thay đổi. Phải so sánh giới hạn hai phía và giá trị tại điểm.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Tìm tham số để liên tục</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$$f(x)=\begin{cases}c^2x^2+2cx,&x&lt;1,\\4x^3-cx,&x\ge1.\end{cases}$$</div><div class="card">Điều kiện tại 1: $c^2+2c=4-c$, hay $(c+4)(c-1)=0$. Vậy $c=1$ hoặc $c=-4$. Ngoài 1, mỗi nhánh là đa thức.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Khi có nhiều điểm nối, lập điều kiện tại từng điểm rồi giải đồng thời.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Định lý giá trị trung gian</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Nếu $f$ liên tục trên $[a,b]$, thì mọi giá trị nằm giữa $f(a)$ và $f(b)$ đều được nhận tại một điểm của đoạn. Nếu nằm thực sự giữa, điểm có thể chọn trong $(a,b)$.</div><div class="card">Đặc biệt, nếu $f(a)f(b)&lt;0$ thì có $c\in(a,b)$ với $f(c)=0$.</div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>Định lý cho sự tồn tại, không tự cho duy nhất. Không được bỏ giả thiết liên tục: hàm bước có thể đổi dấu mà không bằng 0.</details></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Giá trị trung gian: ý tưởng chứng minh</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Giả sử $f(a)&lt;N&lt;f(b)$. Đặt $A=\{x\in[a,b]:f(x)\le N\}$, $c=\sup A$. Tính liên tục ở hai đầu cho $a&lt;c&lt;b$.</div><div class="card">Nếu $f(c)&lt;N$, tính liên tục cho một điểm $x&gt;c$ vẫn thuộc $A$: mâu thuẫn cận trên. Nếu $f(c)&gt;N$, có lân cận của $c$ không chứa điểm $A$, trái với tính chất supremum. Vậy $f(c)=N$.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Tồn tại và duy nhất là hai việc khác nhau</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">$F(x)=x^3+x-1$ liên tục trên $[0,1]$; $F(0)=-1$, $F(1)=1$, nên có nghiệm trong $(0,1)$.</div><div class="card">Nếu $y&gt;x$, $$F(y)-F(x)=(y-x)(y^2+xy+x^2+1)&gt;0.$$ Vì $y^2+xy+x^2=(y+x/2)^2+3x^2/4\ge0$, $F$ tăng nghiêm ngặt; nghiệm là duy nhất.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Chia đôi: thu hẹp khoảng chứa nghiệm</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">Với $F(x)=x^3+x-1$, bắt đầu $[a,b]=[0,1]$. Tính $m=(a+b)/2$; giữ nửa khoảng có hai đầu trái dấu.</div><button id="bisectStep" class="nav-btn" type="button">Thêm một bước</button> <button id="bisectReset" class="nav-btn" type="button">Bắt đầu lại</button><svg id="bisectPlot" class="p3plot" viewBox="0 0 900 230" role="img" aria-label="Khoảng chứa nghiệm thu hẹp qua phép chia đôi"></svg><p id="bisectText" aria-live="polite"></p></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Weierstrass: vai trò của đoạn đóng</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card">Nếu $f$ liên tục trên đoạn hữu hạn $[a,b]$, thì $f$ bị chặn và đạt giá trị nhỏ nhất, lớn nhất: $$\exists x_m,x_M\in[a,b],\quad f(x_m)\le f(x)\le f(x_M).$$</div><div class="card">$f(x)=x$ trên $(0,1)$ bị chặn nhưng không đạt min/max. $f(x)=1/x$ trên $(0,1)$ không bị chặn. Không thay đoạn đóng bằng khoảng mở trong định lý.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Weierstrass: phác thảo chứng minh</h2><span class="slide-category">Đọc thêm · Chứng minh</span></div><div class="card">Dùng tính chất: mọi dãy trong $[a,b]$ có dãy con hội tụ đến một điểm của đoạn (Bolzano–Weierstrass). Nếu $f$ không bị chặn, chọn $|f(x_n)|&gt;n$; dãy con $x_{n_k}\to c$ cho $f(x_{n_k})\to f(c)$, mâu thuẫn.</div><div class="card">Đặt $M=\sup f([a,b])$. Chọn $x_n$ sao cho $M-1/n&lt;f(x_n)\le M$. Một dãy con tiến đến $c$ và tính liên tục cho $f(c)=M$. Tương tự cho min.</div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Bản đồ phương pháp giải</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><table><tr><th>Dấu hiệu</th><th>Hướng xử lý</th></tr><tr><td>Hàm liên tục tại điểm</td><td>Thay trực tiếp</td></tr><tr><td>$0/0$, đa thức / căn</td><td>Phân tích nhân tử / liên hợp</td></tr><tr><td>Trị tuyệt đối, từng đoạn</td><td>Xét trái và phải</td></tr><tr><td>Dao động × biên độ nhỏ</td><td>Kẹp trị tuyệt đối</td></tr><tr><td>Liên tục với tham số</td><td>Ghép giới hạn hai phía với giá trị</td></tr><tr><td>Tồn tại nghiệm</td><td>Liên tục + đổi dấu; xét duy nhất riêng</td></tr></table></div></div><div class="slide"><div class="slide-header"><h2 class="slide-title">Tự kiểm tra trước khi kết thúc</h2><span class="slide-category">Hàm số · Giới hạn · Liên tục</span></div><div class="card"><ol><li>Tính $\lim_{x\to1}(x^2-1)/(x-1)$.</li><li>Có thể chọn $f(0)$ để $\sin x/|x|$ liên tục tại 0 không?</li><li>Vì sao $x^3+x-1=0$ có đúng một nghiệm?</li></ol></div><details class="v2-reveal"><summary>Dự đoán trước · Xem giải thích</summary>1) Bằng 2. 2) Không, vì hai giới hạn một phía khác nhau. 3) Liên tục và đổi dấu cho tồn tại; tăng nghiêm ngặt cho duy nhất.</details><div class="card"><a href="baitap.html">Mở bài tập theo dạng →</a> · Phần tiếp theo: đạo hàm và vi phân.</div></div></div><div class="nav-bar"><a class="home-link" href="index.html" aria-label="Về giới thiệu chuyên đề">Chuyên đề</a><button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Trang trước</button><div class="slide-counter"><label for="slideSelect">Đến trang </label><select id="slideSelect"></select> <span id="slideCounter" aria-live="polite"></span></div><button class="nav-btn" id="fullscreenBtn" type="button" aria-pressed="false" title="Toàn màn hình (F)">⛶ Toàn màn hình</button><button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Trang sau ❯</button></div>
+    <div id="screenStatus" class="screen-status" role="status" aria-live="polite"></div><script>
+        let currentSlide = 0;
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideSelect = document.getElementById('slideSelect');
+        slides.forEach((slide, i) => {
+            const option = document.createElement('option'); option.value = i;
+            option.textContent = `${i+1}. ${slide.querySelector('h2.slide-title, h1').textContent.trim()}`;
+            slideSelect.appendChild(option);
+        });
+        function updateSlide() {
+            slides.forEach((slide, i) => { slide.classList.toggle('active', i === currentSlide); slide.setAttribute('aria-hidden', String(i !== currentSlide)); });
+            slides[currentSlide].scrollTop = 0;
+            progressBar.style.width = ((currentSlide+1)/totalSlides*100)+'%';
+            slideCounter.textContent = `${currentSlide+1} / ${totalSlides}`;
+            slideSelect.value = currentSlide;
+            prevBtn.disabled = currentSlide === 0; nextBtn.disabled = currentSlide === totalSlides-1;
+            if (typeof window.MathJax?.typesetPromise === 'function') {
+                window.MathJax.typesetPromise([slides[currentSlide]]).catch(console.error);
+            }
+        }
+        function changeSlide(direction) { currentSlide = Math.max(0, Math.min(totalSlides-1, currentSlide+direction)); updateSlide(); }
+        slideSelect.addEventListener('change', () => { currentSlide = Number(slideSelect.value); updateSlide(); });
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const screenStatus = document.getElementById('screenStatus');
+        let fullscreenBusy = false;
+        let screenNoticeTimer;
+        function nativeFullscreenElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+        function syncFullscreen() {
+            const native = Boolean(nativeFullscreenElement());
+            if (native) document.body.classList.remove('presentation-mode');
+            const expanded = document.body.classList.contains('presentation-mode');
+            fullscreenBtn.textContent = native ? '⛶ Thoát toàn màn hình' : expanded ? '↙ Thu gọn' : '⛶ Toàn màn hình';
+            fullscreenBtn.setAttribute('aria-pressed', String(native || expanded));
+        }
+        function usePresentationMode() {
+            document.body.classList.add('presentation-mode');
+            screenStatus.textContent = 'Đã mở rộng vùng trình chiếu. Trình duyệt này không cho phép toàn màn hình; thanh địa chỉ có thể vẫn hiện.';
+            clearTimeout(screenNoticeTimer);
+            screenNoticeTimer = setTimeout(() => { screenStatus.textContent = ''; }, 6000);
+        }
+        async function toggleFullscreen() {
+            if (fullscreenBusy) return;
+            fullscreenBusy = true;
+            clearTimeout(screenNoticeTimer);
+            screenStatus.textContent = '';
+            try {
+                if (nativeFullscreenElement()) {
+                    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+                    if (exit) await exit.call(document);
+                } else if (document.body.classList.contains('presentation-mode')) {
+                    document.body.classList.remove('presentation-mode');
+                } else {
+                    const el = document.documentElement;
+                    const request = el.requestFullscreen || el.webkitRequestFullscreen;
+                    const enabled = el.requestFullscreen ? document.fullscreenEnabled : document.webkitFullscreenEnabled;
+                    if (request && enabled !== false) {
+                        try { await request.call(el); } catch (_) { usePresentationMode(); }
+                    } else usePresentationMode();
+                }
+            } catch (_) {
+                screenStatus.textContent = 'Hãy dùng nút thoát toàn màn hình của trình duyệt.';
+            } finally {
+                fullscreenBusy = false;
+                syncFullscreen();
+            }
+        }
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', syncFullscreen);
+        document.addEventListener('webkitfullscreenchange', syncFullscreen);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.body.classList.contains('presentation-mode')) {
+                document.body.classList.remove('presentation-mode');
+                screenStatus.textContent = '';
+                syncFullscreen();
+            }
+        });
+        document.addEventListener('keydown', e => {
+            if (e.altKey || e.ctrlKey || e.metaKey || e.target.closest('select, input, textarea, [contenteditable="true"]')) return;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+            else if (e.key === 'Home') { e.preventDefault(); currentSlide = 0; updateSlide(); }
+            else if (e.key === 'End') { e.preventDefault(); currentSlide = totalSlides - 1; updateSlide(); }
+            else if (e.key.toLowerCase() === 'f' && !e.repeat) { e.preventDefault(); toggleFullscreen(); }
+            else if (e.code === 'Space' && !e.target.closest('button, a')) { e.preventDefault(); changeSlide(e.shiftKey ? -1 : 1); }
+        });
+        syncFullscreen();
+
+        updateSlide();
+
+function graphFrame(xmin,xmax,ymin,ymax,h=280,width=690,left=65){const X=x=>left+(x-xmin)*width/(xmax-xmin),Y=y=>h-35-(y-ymin)*(h-60)/(ymax-ymin);let svg=`<rect width="900" height="${h}" fill="white"/><path d="M${left} 20V${h-35}H${left+width}" stroke="#64748b" fill="none"/>`;if(ymin<0&&ymax>0)svg+=`<path d="M65 ${Y(0)}H760" stroke="#94a3b8"/>`;const line=(f,lo=xmin,hi=xmax,color='#2563eb')=>`<polyline points="${Array.from({length:151},(_,i)=>{let x=lo+(hi-lo)*i/150;return `${X(x)},${Y(f(x))}`;}).join(' ')}" stroke="${color}" stroke-width="3" fill="none"/>`;return {X,Y,svg,line};}
+function drawInverse(){const t=+document.getElementById('inverseT').value;document.getElementById('inverseOut').value=t.toFixed(2);const g=graphFrame(0,4,0,4,290,230,300),{X,Y}=g;document.getElementById('inversePlot').innerHTML=g.svg+g.line(x=>x,0,4,'#94a3b8')+g.line(x=>x*x,0,2)+g.line(Math.sqrt,0,4,'#15803d')+`<circle cx="${X(t)}" cy="${Y(t*t)}" r="6" fill="#2563eb"/><circle cx="${X(t*t)}" cy="${Y(t)}" r="6" fill="#15803d"/><text x="80" y="24" fill="#2563eb">Xanh dương: x²</text><text x="310" y="24" fill="#15803d">Xanh lá: √x</text><text x="560" y="24">Xám: y = x</text><text x="${X(4)}" y="285">4</text><text x="270" y="${Y(4)+8}">4</text>`;}
+function drawHole(){const c=+document.getElementById('holeC').value;document.getElementById('holeOut').value=c;const g=graphFrame(0,2,0,4),{X,Y}=g;document.getElementById('holePlot').innerHTML=g.svg+g.line(x=>x+2)+`<circle cx="${X(1)}" cy="${Y(3)}" r="8" fill="white" stroke="#2563eb" stroke-width="3"/><circle cx="${X(1)}" cy="${Y(c)}" r="6" fill="#dc2626"/><text x="${X(1)+18}" y="${Y(3)-10}">Giới hạn = 3</text><text x="${X(1)+18}" y="${Y(c)+24}" fill="#b91c1c">f(1) = ${c}</text><text x="${X(1)-10}" y="275">1</text>`;}
+function drawEps3(){const e=+document.getElementById('epsilon3').value,d=e/2;document.getElementById('eps3Out').value=e.toFixed(1);const g=graphFrame(0.5,3.5,0,6),{X,Y}=g;document.getElementById('eps3Plot').innerHTML=g.svg+`<rect x="65" y="${Y(3+e)}" width="690" height="${Y(3-e)-Y(3+e)}" fill="#dcfce7"/><rect x="${X(2-d)}" y="20" width="${X(2+d)-X(2-d)}" height="225" fill="#dbeafe" opacity=".65"/>`+g.line(x=>2*x-1)+`<circle cx="${X(2)}" cy="${Y(3)}" r="6" fill="white" stroke="#2563eb" stroke-width="2"/><text x="770" y="${Y(3+e)}">3 + ε</text><text x="770" y="${Y(3-e)}">3 − ε</text><text x="${X(2-d)-15}" y="275">2 − δ</text><text x="${X(2+d)-15}" y="275">2 + δ</text>`;document.getElementById('eps3Text').textContent=`ε = ${e.toFixed(1)}, chọn δ = ${d.toFixed(2)}. Mọi x trong dải xanh dương (trừ x = 2) đều có f(x) trong dải xanh lá.`;}
+let bisA=0,bisB=1,bisN=0;const F=x=>x*x*x+x-1;
+function drawBisect(){const g=graphFrame(0,1,-1.1,1.1,230),{X,Y}=g,m=(bisA+bisB)/2;document.getElementById('bisectPlot').innerHTML=g.svg+g.line(F)+`<path d="M${X(bisA)} 25V195M${X(bisB)} 25V195" stroke="#dc2626" stroke-width="2"/><path d="M${X(bisA)} 205H${X(bisB)}" stroke="#15803d" stroke-width="6"/><text x="80" y="22">F(x) = x³ + x − 1 · Hai vạch đỏ: khoảng đang xét</text>`;document.getElementById('bisectText').textContent=`Bước ${bisN}: [${bisA.toFixed(6)}, ${bisB.toFixed(6)}]. Trung điểm ≈ ${m.toFixed(6)}; sai số không quá ${((bisB-bisA)/2).toPrecision(3)}. (Các đầu mút hiển thị làm tròn.)`;document.getElementById('bisectStep').disabled=bisN>=20;}
+document.getElementById('bisectStep').addEventListener('click',()=>{if(bisN>=20)return;let m=(bisA+bisB)/2;if(F(m)===0){bisA=bisB=m;}else if(F(bisA)*F(m)<0)bisB=m;else bisA=m;bisN++;drawBisect();});
+document.getElementById('bisectReset').addEventListener('click',()=>{bisA=0;bisB=1;bisN=0;drawBisect();});
+for(const [id,fn] of [['inverseT',drawInverse],['holeC',drawHole],['epsilon3',drawEps3]]){document.getElementById(id).addEventListener('input',fn);fn();}drawBisect();
+document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise([d]).catch(console.error);}));
+</script></body></html>

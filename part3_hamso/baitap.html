@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập phần 3 · Hàm số, giới hạn và liên tục</title>
+    
+    <!-- Tích hợp MathJax để hiển thị công thức Toán LaTeX -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0 0 8px 0; font-size: 24px; }
+        header p { margin: 0; opacity: 0.9; font-size: 15px; }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .btn-master {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-master:hover { background-color: var(--primary-light); }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 6px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-size: 19px;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .badge {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .problem-statement {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .toggle-btn {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-light);
+        }
+
+        .solution-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px 18px;
+            background-color: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            border-radius: 0 8px 8px 0;
+            font-size: 14.5px;
+        }
+        .solution-box.show { display: block; }
+        .solution-title {
+            font-weight: 700;
+            color: #15803d;
+            margin-bottom: 8px;
+        }
+    .source-note, .section-note { color: #475569; font-size: 13px; margin: 0 0 12px; }
+        .study-note { background: #eff6ff; padding: 16px 20px; border-radius: 8px; }
+        .toolbar { gap: 12px; flex-wrap: wrap; }
+        .solution-box { overflow-x: auto; }
+        .problem-statement { overflow-x: auto; }
+    
+.container{max-width:1200px}body{font-size:22px;line-height:1.6}.problem-statement,.solution-box{font-size:22px}header h1{font-size:34px}header p,.section-title{font-size:24px}.badge,.toggle-btn,.source-note,.section-note{font-size:17px}.btn-master{font-size:18px}@media(max-width:650px){body,.problem-statement,.solution-box{font-size:19px}header h1{font-size:28px}}
+</style>
+</head>
+<body><div class="container"><header><h1>HÀM SỐ · GIỚI HẠN · LIÊN TỤC</h1><p>Bài tập phần 3 · Vi tích phân 1C</p></header><p><a href="index.html">← Giới thiệu chuyên đề</a> · <a href="baigiang.html">Mở bài giảng</a></p><div class="toolbar"><span>Tổng số: <strong>33 bài tập</strong></span><button class="btn-master" id="masterBtn" onclick="toggleAllSolutions()">Hiện tất cả hướng dẫn</button></div><p class="study-note">Tự làm trước khi xem hướng dẫn. Các bài được xếp theo nội dung học; nhóm cuối yêu cầu tự chọn phương pháp. Không dùng đạo hàm hoặc L’Hôpital.</p><nav class="study-note"><a href="#g0">A</a> · <a href="#g1">B</a> · <a href="#g2">C</a> · <a href="#g3">D</a> · <a href="#g4">E</a> · <a href="#g5">F</a></nav><h2 class="section-title" id="g0">A. Ánh xạ, miền xác định và hàm hợp</h2><div class="exercise-card"><span class="badge">Bài 1 · Đơn ánh và toàn ánh</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Phân loại: a) $x^2:\mathbb R\to\mathbb R$; b) $x^2:\mathbb R\to[0,+\infty)$; c) $x^2:[0,+\infty)\to[0,+\infty)$; d) $2x-1:\mathbb R\to\mathbb R$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol1" onclick="toggleSolution('sol1', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol1"><div class="solution-title">Hướng dẫn giải</div>a) Không đơn ánh ($1,-1$ cùng ảnh), không toàn ánh (không nhận số âm). b) Toàn ánh vì $y\ge0$ có tiền ảnh $\sqrt y$, không đơn ánh. c) Song ánh. d) Song ánh: mỗi $y$ có duy nhất tiền ảnh $(y+1)/2$.</div></div><div class="exercise-card"><span class="badge">Bài 2 · Tìm miền xác định</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tìm miền tự nhiên của a) $\sqrt{2-x}/(x-1)$; b) $\ln(x-1)/\sqrt{4-x}$; c) $\arcsin(2x-1)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol2" onclick="toggleSolution('sol2', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol2"><div class="solution-title">Hướng dẫn giải</div>a) $x\le2$, $x\ne1$. b) $x&gt;1$ và $x&lt;4$, nên $(1,4)$. c) $-1\le2x-1\le1$, nên $[0,1]$.</div></div><div class="exercise-card"><span class="badge">Bài 3 · Thứ tự hàm hợp</span><p class="source-note">Ví dụ hàm hợp trong tài liệu học phần, bổ sung câu hỏi</p><div class="problem-statement">$f(x)=x^2$, $g(x)=x-3$. Tìm $f\circ g$, $g\circ f$ và giải $(f\circ g)(x)=(g\circ f)(x)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol3" onclick="toggleSolution('sol3', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol3"><div class="solution-title">Hướng dẫn giải</div>$(f\circ g)(x)=(x-3)^2$, $(g\circ f)(x)=x^2-3$. Phương trình tương đương $-6x+9=-3$, nên $x=2$.</div></div><div class="exercise-card"><span class="badge">Bài 4 · Hàm hợp với căn</span><p class="source-note">Ví dụ hàm hợp trong tài liệu học phần</p><div class="problem-statement">Với $f(x)=\sqrt x$, $g(x)=\sqrt{2-x}$, tìm bốn hàm $f\circ g$, $g\circ f$, $f\circ f$, $g\circ g$ và miền.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol4" onclick="toggleSolution('sol4', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol4"><div class="solution-title">Hướng dẫn giải</div>Tương ứng: $\sqrt[4]{2-x}$ trên $(-\infty,2]$; $\sqrt{2-\sqrt x}$ trên $[0,4]$; $\sqrt[4]x$ trên $[0,+\infty)$; $\sqrt{2-\sqrt{2-x}}$ trên $[-2,2]$. Trường hợp cuối cần đồng thời $x\le2$ và $2-x\le4$.</div></div><div class="exercise-card"><span class="badge">Bài 5 · Hàm ngược và miền</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tìm hàm ngược của a) $f(x)=\sqrt{-x-1}$; b) $g(x)=x^2$ với $x\le0$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol5" onclick="toggleSolution('sol5', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol5"><div class="solution-title">Hướng dẫn giải</div>a) $D_f=(-\infty,-1]$, ảnh $[0,+\infty)$; $f^{-1}(y)=-y^2-1$ với $y\ge0$. b) Ảnh $[0,+\infty)$; $g^{-1}(y)=-\sqrt y$ với $y\ge0$. Chọn dấu âm do miền gốc $x\le0$.</div></div><div class="exercise-card"><span class="badge">Bài 6 · Mũ, logarit và nhánh lượng giác</span><p class="source-note">Giáo trình: Bài 1.2.4(a,b); câu c bổ sung</p><div class="problem-statement">Giải a) $3e^{2x-4}=5$; b) $-1+2\ln(2-3x)=9$. Tính c) $\arcsin(\sin(3\pi/4))$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol6" onclick="toggleSolution('sol6', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol6"><div class="solution-title">Hướng dẫn giải</div>a) $x=2+\tfrac12\ln(5/3)$. b) $x=(2-e^5)/3$, thỏa $x&lt;2/3$. c) $\pi/4$, thuộc khoảng giá trị $[-\pi/2,\pi/2]$.</div></div><div class="exercise-card"><span class="badge">Bài 7 · Mô hình tăng trưởng</span><p class="source-note">Giáo trình: Bài 1.2.9, nêu rõ giả thiết mô hình</p><div class="problem-statement">Một quần thể ban đầu có 100 vi khuẩn, tăng gấp đôi mỗi 3 giờ. Giả sử mô hình tăng trưởng mũ liên tục, lập công thức và tìm thời gian đạt 1000.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol7" onclick="toggleSolution('sol7', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol7"><div class="solution-title">Hướng dẫn giải</div>$P(t)=100\cdot2^{t/3}$, $t\ge0$ (giờ). $P(t)=1000$ cho $t=3\ln10/\ln2\approx9{,}966$ giờ. Đây là dự đoán theo mô hình, không phải khẳng định về mọi quần thể thực tế.</div></div><h2 class="section-title" id="g1">B. Định nghĩa giới hạn và giới hạn một phía</h2><div class="exercise-card"><span class="badge">Bài 8 · Điểm tụ và điểm cô lập</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tìm tập điểm tụ của a) $(0,1)$; b) $\{1/n:n\ge1\}$; c) $\{0\}\cup[1,2]$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol8" onclick="toggleSolution('sol8', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol8"><div class="solution-title">Hướng dẫn giải</div>a) $[0,1]$. b) $\{0\}$; mỗi $1/n$ là điểm cô lập. c) $[1,2]$; 0 cô lập. Dùng định nghĩa có điểm khác a gần a tùy ý.</div></div><div class="exercise-card"><span class="badge">Bài 9 · Giới hạn tuyến tính bằng ε–δ</span><p class="source-note">Giáo trình: Ví dụ 2.1.8</p><div class="problem-statement">Chứng minh $\lim_{x\to2}(2x-1)=3$ bằng định nghĩa.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol9" onclick="toggleSolution('sol9', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol9"><div class="solution-title">Hướng dẫn giải</div>Cho $\varepsilon&gt;0$, lấy $\delta=\varepsilon/2$. Nếu $0&lt;|x-2|&lt;\delta$ thì $|(2x-1)-3|=2|x-2|&lt;\varepsilon$.</div></div><div class="exercise-card"><span class="badge">Bài 10 · Chặn một nhân tử phụ</span><p class="source-note">Giáo trình: Ví dụ 2.1.9</p><div class="problem-statement">Chứng minh $\lim_{x\to2}x^2=4$ bằng định nghĩa.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol10" onclick="toggleSolution('sol10', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol10"><div class="solution-title">Hướng dẫn giải</div>Chọn $\delta=\min\{1,\varepsilon/5\}$. Từ $|x-2|&lt;1$ suy ra $|x+2|&lt;5$. Vậy $|x^2-4|=|x-2||x+2|&lt;5\delta\le\varepsilon$.</div></div><div class="exercise-card"><span class="badge">Bài 11 · Trái, phải và giá trị tại điểm</span><p class="source-note">Giáo trình: Bài 2.1.12</p><div class="problem-statement">$g(x)=x^2-1$ nếu $x&lt;1$; $g(1)=0$; $g(x)=2x-x^2$ nếu $1&lt;x\le2$; $g(x)=x^3-5x+4$ nếu $x&gt;2$. Tìm các giới hạn một phía tại 1 và 2; xét giới hạn hai phía.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol11" onclick="toggleSolution('sol11', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol11"><div class="solution-title">Hướng dẫn giải</div>Tại 1: trái bằng 0, phải bằng 1, không có giới hạn hai phía. Tại 2: trái bằng 0, phải bằng 2, không có giới hạn hai phía. Giá trị $g(1)=0$, $g(2)=0$ không sửa được sự khác biệt hai phía.</div></div><div class="exercise-card"><span class="badge">Bài 12 · Dấu của trị tuyệt đối</span><p class="source-note">Giáo trình: Bài 2.1.11</p><div class="problem-statement">Tìm a) $\lim_{x\to1^-}(x-1)/|x^3-x^2|$; b) $\lim_{x\to-7}(7-|x|)/(3x+21)$; c) $\lim_{x\to0^+}(1/x-1/|x|)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol12" onclick="toggleSolution('sol12', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol12"><div class="solution-title">Hướng dẫn giải</div>a) Gần 1 từ trái, mẫu $x^2(1-x)$ nên thương $-1/x^2\to-1$. b) Gần −7, $|x|=-x$ nên thương bằng $1/3$ khi $x\ne-7$. c) Với $x&gt;0$, biểu thức bằng 0.</div></div><h2 class="section-title" id="g2">C. Tính giới hạn theo phương pháp</h2><div class="exercise-card"><span class="badge">Bài 13 · Các phép toán giới hạn</span><p class="source-note">Giáo trình: Bài 2.1.3</p><div class="problem-statement">Biết $\lim_{x\to1}f(x)=-3$, $\lim_{x\to1}g(x)=5$. Tính giới hạn của a) $f+g$; b) $-2f+3g$; c) $4f+3g^2$; d) $-4x^2fg^3/(1-f)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol13" onclick="toggleSolution('sol13', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol13"><div class="solution-title">Hướng dẫn giải</div>a) 2; b) 21; c) $-12+75=63$; d) $(-4)(1)(-3)(125)/4=375$. Mẫu tiến đến 4 khác 0 nên được dùng quy tắc thương.</div></div><div class="exercise-card"><span class="badge">Bài 14 · Rút gọn nhân tử</span><p class="source-note">Giáo trình: Bài 2.1.4</p><div class="problem-statement">Tính $\lim_{x\to2}(x^2-x-2)/(x^2+x-6)$. Giải thích vì sao được rút gọn dù công thức ban đầu không xác định tại 2.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol14" onclick="toggleSolution('sol14', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol14"><div class="solution-title">Hướng dẫn giải</div>Với $x\ne2$, thương bằng $(x+1)/(x+3)$, giới hạn $3/5$. Giới hạn chỉ dùng các điểm khác 2 trong một lân cận của 2.</div></div><div class="exercise-card"><span class="badge">Bài 15 · Liên hợp và khai triển</span><p class="source-note">Giáo trình: Bài 2.1.5(a,b,d)</p><div class="problem-statement">Tìm a) $\lim_{h\to0}((10+h)^2-100)/h$; b) $\lim_{h\to0}(\sqrt{100+h}-10)/h$; c) $\lim_{t\to0}(\sqrt{1+t}-\sqrt{1-t})/t$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol15" onclick="toggleSolution('sol15', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol15"><div class="solution-title">Hướng dẫn giải</div>a) Rút gọn thành $20+h\to20$. b) Nhân liên hợp được $1/(\sqrt{100+h}+10)\to1/20$. c) Nhân liên hợp được $2/(\sqrt{1+t}+\sqrt{1-t})\to1$.</div></div><div class="exercise-card"><span class="badge">Bài 16 · Kẹp hàm dao động</span><p class="source-note">Giáo trình: Bài 2.1.6–2.1.7</p><div class="problem-statement">Chứng minh a) $x^2\cos(20\pi x)\to0$; b) $x^3\sin(\pi/x)\to0$ khi $x\to0$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol16" onclick="toggleSolution('sol16', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol16"><div class="solution-title">Hướng dẫn giải</div>a) Trị tuyệt đối không vượt $x^2\to0$. b) Trị tuyệt đối không vượt $|x|^3\to0$. Áp dụng định lý kẹp.</div></div><div class="exercise-card"><span class="badge">Bài 17 · Kẹp bởi hai đa thức</span><p class="source-note">Giáo trình: Bài 2.1.8</p><div class="problem-statement">Biết $4x-9\le f(x)\le x^2-4x+7$ với $x\ge0$. Tìm $\lim_{x\to4}f(x)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol17" onclick="toggleSolution('sol17', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol17"><div class="solution-title">Hướng dẫn giải</div>Hai biên đều tiến đến 7 khi $x\to4$, nên giới hạn của $f$ bằng 7. Điều kiện tương thích vì hiệu hai biên là $(x-4)^2\ge0$.</div></div><div class="exercise-card"><span class="badge">Bài 18 · Kẹp một phía</span><p class="source-note">Giáo trình: Bài 2.1.10</p><div class="problem-statement">Tìm $\lim_{x\to0^+}\sqrt{x}[1+\sin^2(2\pi/x)]$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol18" onclick="toggleSolution('sol18', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol18"><div class="solution-title">Hướng dẫn giải</div>$0\le\sqrt{x}[1+\sin^2(2\pi/x)]\le2\sqrt{x}\to0$. Giới hạn bằng 0; miền căn chỉ cho phép tiến đến từ bên phải.</div></div><div class="exercise-card"><span class="badge">Bài 19 · Giới hạn lượng giác</span><p class="source-note">Giáo trình: Bài 2.2.8(e,f); câu c bổ sung</p><div class="problem-statement">Tìm a) $\lim_{x\to0}\sin(2x)/(3x)$; b) $\lim_{x\to0}\sin(3x)/(5x)$; c) $\lim_{x\to0}(1-\cos x)/x^2$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol19" onclick="toggleSolution('sol19', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol19"><div class="solution-title">Hướng dẫn giải</div>a) $(2/3)\sin(2x)/(2x)\to2/3$. b) Tương tự được $3/5$. c) $1-\cos x=2\sin^2(x/2)$, biểu thức bằng $\tfrac12[\sin(x/2)/(x/2)]^2\to1/2$.</div></div><div class="exercise-card"><span class="badge">Bài 20 · Giới hạn tại vô cực</span><p class="source-note">Giáo trình: Bài 2.1.15</p><div class="problem-statement">Tính a) $\lim_{x\to-\infty}(4x^2+3x+7)/(-3x^3+6x)$; b) $\lim_{x\to+\infty}(4x^4+3x+7)/(-3x^3+6x)$; c) $\lim_{x\to+\infty}(3x^6-4x^4+10)/(-2x^6-10x^3+2)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol20" onclick="toggleSolution('sol20', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol20"><div class="solution-title">Hướng dẫn giải</div>a) Chia $x^3$, giới hạn 0. b) Biểu thức bằng $x$ nhân một thừa số tiến đến $-4/3$, nên $-\infty$. c) Chia $x^6$, giới hạn $-3/2$.</div></div><div class="exercise-card"><span class="badge">Bài 21 · Bác bỏ giới hạn bằng hai dãy</span><p class="source-note">Giáo trình: Bài 2.1.18 và Bài 2.2.4(d,e), bổ sung so sánh</p><div class="problem-statement">Chứng minh $\sin(1/x)$ không có giới hạn tại 0. So sánh với $x\sin(1/x)$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol21" onclick="toggleSolution('sol21', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol21"><div class="solution-title">Hướng dẫn giải</div>Lấy $x_n=1/(\pi/2+2\pi n)$ và $y_n=1/(3\pi/2+2\pi n)$. Hai dãy tiến đến 0 nhưng đầu ra là 1 và −1. Còn $|x\sin(1/x)|\le|x|\to0$.</div></div><h2 class="section-title" id="g3">D. Liên tục và phân loại gián đoạn</h2><div class="exercise-card"><span class="badge">Bài 22 · Ghép hai đa thức</span><p class="source-note">Giáo trình: Bài 2.2.2</p><div class="problem-statement">Xét tính liên tục của $f(x)=3x+1$ khi $x\le-1$ và $f(x)=x^3-1$ khi $x&gt;-1$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol22" onclick="toggleSolution('sol22', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol22"><div class="solution-title">Hướng dẫn giải</div>Mỗi nhánh liên tục. Tại −1, hai giới hạn một phía cùng bằng −2, bằng $f(-1)$. Vậy liên tục trên $\mathbb R$.</div></div><div class="exercise-card"><span class="badge">Bài 23 · Gián đoạn bước nhảy</span><p class="source-note">Giáo trình: Bài 2.2.5</p><div class="problem-statement">$f(x)=(x^2-x-2)/(x+1)$ khi $x&lt;-1$; $f(x)=3$ khi $x\ge-1$. Xét liên tục.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol23" onclick="toggleSolution('sol23', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol23"><div class="solution-title">Hướng dẫn giải</div>Nhánh trái rút gọn thành $x-2$, giới hạn tại −1 từ trái bằng −3. Giới hạn phải và giá trị tại −1 đều bằng 3. Gián đoạn bước nhảy tại −1, bước nhảy bằng 6; liên tục ở mọi điểm khác.</div></div><div class="exercise-card"><span class="badge">Bài 24 · Tìm giá trị để lấp lỗ</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">$f(x)=(x^2-1)/(x-1)$ khi $x\ne1$, $f(1)=c$. Tìm c để liên tục. Có thể làm tương tự với $\sin x/|x|$ tại 0 không?</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol24" onclick="toggleSolution('sol24', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol24"><div class="solution-title">Hướng dẫn giải</div>Giới hạn thứ nhất tại 1 bằng 2, nên $c=2$. Với $\sin x/|x|$, giới hạn trái −1 và phải 1 khác nhau nên không có giá trị gán nào tạo liên tục.</div></div><div class="exercise-card"><span class="badge">Bài 25 · Một tham số, hai nghiệm</span><p class="source-note">Giáo trình: Bài 2.2.10</p><div class="problem-statement">Tìm c để $f(x)=c^2x^2+2cx$ khi $x&lt;1$, $f(x)=4x^3-cx$ khi $x\ge1$ liên tục trên $\mathbb R$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol25" onclick="toggleSolution('sol25', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol25"><div class="solution-title">Hướng dẫn giải</div>Tại 1 cần $c^2+2c=4-c$. Do đó $(c+4)(c-1)=0$, suy ra $c=-4$ hoặc $c=1$. Các nhánh là đa thức nên không có điểm nào khác cần kiểm tra.</div></div><div class="exercise-card"><span class="badge">Bài 26 · Hai điểm nối</span><p class="source-note">Giáo trình: Bài 2.2.11</p><div class="problem-statement">Tìm a,b để hàm liên tục trên $\mathbb R$: $f(x)=(x^4-1)/(x-1)$ nếu $x&lt;1$; $f(x)=ax^2-bx+4$ nếu $1\le x&lt;2$; $f(x)=3x+a-b$ nếu $x\ge2$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol26" onclick="toggleSolution('sol26', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol26"><div class="solution-title">Hướng dẫn giải</div>Tại 1: $4=a-b+4$, suy ra $a=b$. Tại 2: $4a-2b+4=6+a-b$, suy ra $3a-b=2$. Vậy $a=b=1$. Các nhánh liên tục trên từng khoảng nên đây là điều kiện đủ.</div></div><div class="exercise-card"><span class="badge">Bài 27 · Hữu tỉ và vô tỉ</span><p class="source-note">Giáo trình: Bài 2.1.17; bổ sung xét liên tục</p><div class="problem-statement">$f(x)=x^2$ nếu $x\in\mathbb Q$, và $f(x)=0$ nếu $x\notin\mathbb Q$. Tính giới hạn tại 0; xác định các điểm liên tục.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol27" onclick="toggleSolution('sol27', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol27"><div class="solution-title">Hướng dẫn giải</div>$0\le f(x)\le x^2$ nên giới hạn tại 0 bằng 0, bằng $f(0)$. Nếu $a\ne0$, có các dãy hữu tỉ và vô tỉ cùng tiến đến a; đầu ra tiến đến $a^2$ và 0 khác nhau. Vậy chỉ liên tục tại 0.</div></div><h2 class="section-title" id="g4">E. Giá trị trung gian và giá trị lớn nhất, nhỏ nhất</h2><div class="exercise-card"><span class="badge">Bài 28 · Nghiệm của cos x = x</span><p class="source-note">Giáo trình: Bài 2.2.14(c), bổ sung tính duy nhất</p><div class="problem-statement">Chứng minh $\cos x=x$ có đúng một nghiệm trong $(0,1)$ mà không dùng đạo hàm.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol28" onclick="toggleSolution('sol28', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol28"><div class="solution-title">Hướng dẫn giải</div>$F(x)=\cos x-x$ liên tục, $F(0)=1&gt;0$, $F(1)=\cos1-1&lt;0$, nên có nghiệm. Trên $[0,1]$, cos giảm nghiêm ngặt và −x giảm nghiêm ngặt, nên F giảm nghiêm ngặt: nghiệm duy nhất.</div></div><div class="exercise-card"><span class="badge">Bài 29 · Ứng dụng giá trị trung gian</span><p class="source-note">Giáo trình: Bài 2.2.13</p><div class="problem-statement">Tốc độ quang hợp biến thiên liên tục, bằng −30 lúc nửa đêm và 18 lúc 12 giờ trưa. Có thời điểm trước trưa tốc độ bằng 10 không?</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol29" onclick="toggleSolution('sol29', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol29"><div class="solution-title">Hướng dẫn giải</div>Có. Số 10 nằm giữa −30 và 18. Định lý giá trị trung gian cho ít nhất một thời điểm trong khoảng 0–12 giờ đạt giá trị 10; không kết luận thời điểm là duy nhất.</div></div><div class="exercise-card"><span class="badge">Bài 30 · Chia đôi và sai số</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Với $F(x)=x^3+x-1$, thực hiện 3 bước chia đôi từ $[0,1]$. Cho xấp xỉ trung điểm và chặn sai số.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol30" onclick="toggleSolution('sol30', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol30"><div class="solution-title">Hướng dẫn giải</div>$F(1/2)=-3/8&lt;0$ giữ $[1/2,1]$; $F(3/4)=11/64&gt;0$ giữ $[1/2,3/4]$; $F(5/8)=-67/512&lt;0$ giữ $[5/8,3/4]$. Trung điểm $11/16=0{,}6875$, sai số không quá $1/16=0{,}0625$.</div></div><div class="exercise-card"><span class="badge">Bài 31 · Đoạn đóng và khoảng mở</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tìm min/max của $f(x)=x^2$ trên a) $[-1,2]$; b) $(-1,2)$. Giải thích vai trò giả thiết Weierstrass.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol31" onclick="toggleSolution('sol31', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol31"><div class="solution-title">Hướng dẫn giải</div>a) Min 0 tại 0; max 4 tại 2. b) Min 0 tại 0; không có max, sup bằng 4. Trên khoảng mở, liên tục không bảo đảm đạt cả hai giá trị biên.</div></div><h2 class="section-title" id="g5">F. Tổng hợp · Tự chọn phương pháp</h2><div class="exercise-card"><span class="badge">Bài 32 · Chọn công cụ trước khi tính</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Tính a) $\lim_{x\to0}(\sqrt{1+x}-1)/\sin x$; b) $\lim_{x\to0}x^2\sin(1/x^2)$; c) $\lim_{x\to0}|x|/x$.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol32" onclick="toggleSolution('sol32', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol32"><div class="solution-title">Hướng dẫn giải</div>a) Tách thành $[(\sqrt{1+x}-1)/x]\,[x/\sin x]\to1/2$. b) Trị tuyệt đối không vượt $x^2$, giới hạn 0. c) Trái −1, phải 1: không tồn tại.</div></div><div class="exercise-card"><span class="badge">Bài 33 · Phát hiện kết luận thiếu giả thiết</span><p class="source-note">Bài bổ sung theo nội dung học phần</p><div class="problem-statement">Đúng hay sai? a) $f(a)$ tồn tại thì giới hạn tại a tồn tại. b) Đổi dấu ở hai đầu đoạn thì có nghiệm ở giữa. c) Liên tục trên đoạn hữu hạn đóng thì đạt min/max.</div><button class="toggle-btn" aria-expanded="false" aria-controls="sol33" onclick="toggleSolution('sol33', this)">Xem hướng dẫn giải</button><div class="solution-box" id="sol33"><div class="solution-title">Hướng dẫn giải</div>a) Sai: $f(x)=|x|/x$ với $x\ne0$, $f(0)=0$. b) Sai nếu thiếu liên tục; hàm bằng −1 khi $x&lt;0$ và 1 khi $x\ge0$ trên $[-1,1]$ không có nghiệm. c) Đúng theo Weierstrass.</div></div></div><script>
+function syncMaster(){const all=Array.from(document.querySelectorAll('.solution-box')).every(b=>b.classList.contains('show'));document.getElementById('masterBtn').textContent=all?'Ẩn tất cả hướng dẫn':'Hiện tất cả hướng dẫn';}
+function toggleSolution(id,button){const box=document.getElementById(id);const open=box.classList.toggle('show');button.setAttribute('aria-expanded',String(open));button.textContent=open?'Ẩn hướng dẫn giải':'Xem hướng dẫn giải';syncMaster();if(open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise([box]).catch(console.error);}
+function toggleAllSolutions(){const boxes=Array.from(document.querySelectorAll('.solution-box'));const open=!boxes.every(b=>b.classList.contains('show'));boxes.forEach(b=>b.classList.toggle('show',open));document.querySelectorAll('.toggle-btn').forEach(b=>{b.setAttribute('aria-expanded',String(open));b.textContent=open?'Ẩn hướng dẫn giải':'Xem hướng dẫn giải';});syncMaster();if(open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise(boxes).catch(console.error);}
+</script></body></html>
