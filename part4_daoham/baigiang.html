@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần 4 · Đạo hàm và ứng dụng · Vi tích phân 1C</title>
+    
+    <!-- MathJax 3: hiển thị công thức toán trong bài giảng -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            chtml: {
+                scale: 1.05
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --border: #cbd5e1;
+            --highlight-bg: #eff6ff;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444;
+            --success-bg: #f0fdf4;
+            --success-border: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            /* Font chữ PowerPoint chuẩn hỗ trợ 100% tiếng Việt */
+            font-family: 'Segoe UI', Arial, Calibri, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #334155;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #f59e0b);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Slide Viewport */
+        .deck-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 88vh;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px 50px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .slide.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Headers & Typography */
+        .slide-header {
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 14px;
+            margin-bottom: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-title {
+            color: var(--primary);
+            font-size: 32px; /* Tăng từ 26px lên 32px */
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .slide-category {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        /* Content Boxes */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+            font-size: 18px; /* Tăng kích thước chữ tổng thể */
+            line-height: 1.6;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 20px; /* Tăng từ 16px lên 20px */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .box-realworld {
+            background-color: var(--highlight-bg);
+            border-left: 5px solid var(--primary-light);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-math {
+            background-color: var(--success-bg);
+            border-left: 5px solid var(--success-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .box-warning {
+            background-color: var(--danger-bg);
+            border-left: 5px solid var(--danger-border);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Lists & Tables */
+        ul, ol { margin-top: 8px; padding-left: 26px; }
+        li { margin-bottom: 10px; font-size: 18px; line-height: 1.6; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 17px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            text-align: center;
+        }
+        th { background-color: #f1f5f9; color: var(--primary); font-weight: 700; }
+
+        /* Phóng to công thức toán inline */
+        mjx-container {
+            font-size: 105% !important;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background-color: #1e293b;
+            padding: 14px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background-color: var(--primary); }
+        .nav-btn:disabled { background-color: #475569; cursor: not-allowed; }
+
+        .slide-counter { font-size: 17px; font-weight: 700; }
+    
+        .deck-container { min-height: 0; padding: 12px 20px; overflow: hidden; }
+        .slide { height: 100%; max-height: 100%; padding: 26px 38px; }
+        .slide-header { gap: 15px; margin-bottom: 18px; }
+        .slide-title { font-size: 29px; }
+        .slide-category { flex-shrink: 0; }
+        .card, .box-math, .box-realworld, .box-warning { padding: 15px 18px; }
+        .card p { margin: 8px 0; }
+        .book-figure, .diagram { margin: 0 0 16px; padding: 14px; background: white; border: 1px solid var(--border); border-radius: 12px; }
+        .book-figure img { display: block; max-width: 100%; max-height: 320px; width: auto; margin: auto; object-fit: contain; }
+        .mapping-figure img { max-height: 385px; }
+        figcaption, .source-note { color: #475569; font-size: 13px; line-height: 1.5; margin-top: 10px; }
+        .diagram svg { display: block; width: 100%; max-height: 280px; }
+        .prompt { padding: 12px 18px; background: #fff7ed; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 18px; }
+        .switches { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+        .switches button { border: 1px solid #93c5fd; border-radius: 8px; padding: 9px 12px; color: #1e3a8a; background: #eff6ff; cursor: pointer; font: inherit; }
+        .switches button[aria-pressed="true"] { color: white; background: #1d4ed8; }
+        button:focus-visible, a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        .nav-bar { gap: 12px; padding: 12px 24px; flex-shrink: 0; }
+        .progress-container { flex-shrink: 0; }
+        .slide-counter select { max-width: 260px; font: inherit; padding: 5px; border-radius: 4px; }
+        mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+        @media(max-width: 760px) { .grid-2 { grid-template-columns: 1fr; gap: 8px; } .slide { padding: 18px; } .deck-container { padding: 8px; } .slide-header { flex-wrap: wrap; } .slide-title { font-size: 24px; } .nav-btn { padding: 9px; font-size: 14px; } .slide-counter select { max-width: 135px; font-size: 13px; } .card, li, .box-math, .box-realworld, .box-warning { font-size: 17px; } }
+        @media print { body { height: auto; overflow: visible; background: white; } .slide { display: block !important; height: auto; max-height: none; break-after: page; overflow: visible; box-shadow: none; } .deck-container { display: block; overflow: visible; } .nav-bar,.progress-container,.switches { display: none; } }
+input[type="range"] { width: min(100%, 340px); accent-color: #2563eb; vertical-align: middle; } .source-note { margin-bottom: 8px; }
+
+        .home-link { color: white; font-size: 14px; white-space: nowrap; }
+        .screen-status:empty { display: none; }
+        .screen-status { position: fixed; bottom: 90px; left: 20px; right: 20px; z-index: 20; padding: 14px; background: #fff7ed; color: #7c2d12; border: 1px solid #fdba74; border-radius: 8px; }
+        :fullscreen { background: #0f172a; }
+        .nav-bar { flex-wrap: wrap; }
+        #fullscreenBtn { font-size: 14px; padding: 10px 12px; }
+        @media(max-width: 760px) { .nav-bar { padding: 8px; gap: 8px; } .home-link { order: 4; } #fullscreenBtn { order: 5; margin-left: auto; } .slide-counter { flex: 1; text-align: center; } }
+        @media print { .screen-status { display: none; } }
+     .v2-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v2-grid svg{width:100%;height:auto}.v2-reveal{background:#eff6ff;padding:12px 16px;border-radius:8px;margin-top:12px}.v2-reveal summary{cursor:pointer;font-weight:700;color:#1e3a8a}.v2-grid figure{margin:0}.v2-grid figcaption{font-weight:600}#v2Squeeze,#v2Cobweb{display:block;width:100%;max-height:280px} @media(max-width:600px){.v2-grid{grid-template-columns:1fr}} 
+/* Classroom projection typography */
+.slide{max-width:1440px;padding:24px 34px;font-size:26px;line-height:1.45}
+.slide-title{font-size:36px;line-height:1.2}.slide-category{font-size:18px}
+.card,.box-math,.box-realworld,.box-warning,.prompt,.slide li,.slide table{font-size:26px;line-height:1.45}
+.card h3{font-size:28px}.slide p,.slide label,.slide output,.v2-reveal{font-size:inherit}
+.slide figcaption,.slide .source-note{font-size:18px}.slide-header{margin-bottom:16px}
+.card,.box-math,.box-realworld,.box-warning{padding:12px 16px;margin-bottom:12px}
+.slide th,.slide td{padding:8px 12px}.slide svg text{font-size:20px}
+.v2-grid svg text{font-size:16px}.v2-reveal{padding:10px 14px}
+@media(max-width:760px){.slide{font-size:20px;padding:18px}.slide-title{font-size:28px}.card,.box-math,.box-realworld,.box-warning,.prompt,.slide li,.slide table{font-size:20px}.card h3{font-size:23px}.slide figcaption,.slide .source-note{font-size:16px}}
+
+@media(min-width:761px){#v2Compare svg{max-height:140px}#v2Compare figcaption{margin-top:0}}
+
+/* Fit the visible mobile viewport; presentation fallback keeps exit controls available. */
+body{height:100vh;height:100dvh}
+body.presentation-mode .deck-container{padding:0}
+body.presentation-mode .slide{max-width:none;border-radius:0;padding:16px}
+body.presentation-mode .progress-container{height:4px}
+body.presentation-mode .nav-bar{padding:6px 10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+body.presentation-mode .home-link{display:none}
+.screen-status{pointer-events:none;font-size:16px}
+@media(max-width:760px){.nav-bar{padding-bottom:max(8px,env(safe-area-inset-bottom))}}
+.p3plot{display:block;width:100%;max-height:270px}.p3plot text{font-size:20px}.v2-reveal summary:focus-visible{outline:3px solid #f59e0b}
+.table-scroll,.card{overflow-x:auto}.p4plot{display:block;width:100%;max-height:300px}.p4plot text{font-size:19px}.plot-result{font-size:22px;line-height:1.5}.book-figure{display:block;max-width:100%;max-height:430px;margin:auto}figure{margin:10px 0}figcaption{font-size:16px;color:#475569;text-align:center}.slide p{margin:.6em 0}.slide input[type=range]{max-width:100%;vertical-align:middle}.slide table td{padding:10px 12px}.v2-reveal p{margin:.5em 0}@media(max-width:760px){.plot-result{font-size:19px}.slide-category{display:none}.p4plot{min-height:160px}.book-figure{max-height:300px}}
+</style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="deck-container">
+
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Phần 4 · Đạo hàm và ứng dụng</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Từ tốc độ biến thiên đến công cụ tính toán, xấp xỉ và tối ưu.</div><div class="card">Lộ trình: định nghĩa → tiếp tuyến, vi phân → quy tắc tính → cực trị và giá trị trung bình → L’Hôpital → đạo hàm cấp cao → Taylor–Maclaurin.</div><p>Tiếp nối Phần 3: sử dụng giới hạn và tính liên tục để hiểu đạo hàm.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Khởi động: dự đoán và giải thích</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><ol><li>Hàm liên tục có luôn có đạo hàm không?</li><li>Nếu $f'(a)=0$, điểm $a$ có luôn là cực trị không?</li><li>Có được lấy đạo hàm tử và mẫu để tính mọi giới hạn không?</li></ol></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Không. Các phản ví dụ lần lượt là $|x|$ tại 0, $x^3$ tại 0 và thương $(x+1)/(x+2)$ tại 0: giới hạn bằng $1/2$ nhưng thương đạo hàm bằng 1.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm: giới hạn của tốc độ trung bình</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Cho $f$ xác định trên một khoảng mở chứa $a$. Đạo hàm tại $a$ là giới hạn hữu hạn $$f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}h.$$</div><div class="card">Tương đương: $$f'(a)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}.$$ Nếu giới hạn hữu hạn không tồn tại, $f$ không khả vi tại $a$.</div><p>Đạo hàm tại một điểm là một số; hàm đạo hàm gán cho mỗi điểm khả vi số đó.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Tính bằng định nghĩa: hàm bậc ba</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $f(x)=x^3$: $$\frac{f(a+h)-f(a)}h=\frac{(a+h)^3-a^3}h=3a^2+3ah+h^2\quad(h\ne0).$$</div><div class="card">Cho $h\to0$, suy ra $f'(a)=3a^2$. Đây là cơ sở của công thức $(x^3)'=3x^2$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Thứ tự làm: lập thương sai phân → khử nhân tử gây dạng 0/0 → tính giới hạn.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Tính bằng định nghĩa: hàm nghịch đảo</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $f(x)=1/x$ và $a\ne0$: $$\frac{f(a+h)-f(a)}h=\frac{1/(a+h)-1/a}h=-\frac1{a(a+h)}.$$</div><div class="card">Khi $h\to0$, mẫu tiến đến $a^2\ne0$, nên $f'(a)=-1/a^2$.</div><p>Chọn h đủ gần 0 để a+h khác 0; đạo hàm chỉ xét tại điểm thuộc miền xác định.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Từ cát tuyến đến tiếp tuyến</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Cát tuyến qua $P(a,f(a))$ và $Q(a+h,f(a+h))$ có hệ số góc $m_h=[f(a+h)-f(a)]/h$. Khi $h\to0$, $m_h\to f'(a)$.</div><figure><img class="book-figure" src="assets/cattuyen.jpg" alt="Các cát tuyến qua một điểm cố định tiến dần về tiếp tuyến"><figcaption>Minh họa trong giáo trình Vi tích phân 1, mục 3.1.1.</figcaption></figure></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Khám phá: di chuyển điểm Q</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">Đồ thị $y=x^2$, tiếp điểm $P(1,1)$. Cát tuyến có hệ số góc $2+h$, tiếp tuyến có hệ số góc 2.</div><label for="secH">Chọn h: <output id="secHOut">0.6</output></label> <input id="secH" type="range" min="-1" max="1" step="0.05" value="0.6"><svg class="p4plot" id="secPlot" viewBox="0 0 900 300" role="img" aria-label="Cát tuyến và tiếp tuyến của parabola tại điểm một một"></svg><p class="plot-result" id="secPlotText" aria-live="polite"></p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Tiếp tuyến và tuyến tính hóa</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $f$ khả vi tại $a$, tiếp tuyến tại $(a,f(a))$ có phương trình $$y=f(a)+f'(a)(x-a).$$ Hàm $L(x)=f(a)+f'(a)(x-a)$ là tuyến tính hóa tại $a$.</div><div class="card">Ví dụ: $f(x)=x^2$, $a=1$ cho $L(x)=1+2(x-1)=2x-1$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Cần cả tọa độ tiếp điểm lẫn hệ số góc. Nếu bài cho một điểm ngoài đồ thị, phải tìm tiếp điểm trước.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Vi phân và số gia</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Đặt $\Delta x=h$, $\Delta y=f(a+h)-f(a)$ và $dy=f'(a)\,dx$ với $dx=h$. Khi đó $$\Delta y=f'(a)h+o(h),\qquad\Delta y\approx dy.$$</div><div class="card">$o(h)$ là một hàm của $h$ thỏa $o(h)/h\to0$ khi $h\to0$. Vi phân là phần tuyến tính của số gia, thường không bằng chính xác số gia.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Với $f(x)=x^2$ tại $a=1$, $\Delta y=2h+h^2$, còn $dy=2h$. Sai số bằng $h^2$.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Xấp xỉ tuyến tính trong tính toán</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Chọn tâm $a$ gần số cần tính và có giá trị hàm, đạo hàm dễ biết. $$f(a+h)\approx f(a)+f'(a)h.$$</div><div class="card"><p>$\ln(1{,}05)\approx0+1\cdot0{,}05=0{,}05$.</p><p>$\sqrt{4{,}04}\approx2+\frac14\cdot0{,}04=2{,}01$.</p></div><p>Muốn bảo đảm một mức sai số cụ thể, dùng phần dư Taylor ở cuối chuyên đề.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Quan sát sai số của tiếp tuyến</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">Với $f(x)=x^2$ tại 1: $f(1+h)=1+2h+h^2$, $L(1+h)=1+2h$. Thu nhỏ h để thấy sai số $h^2$ giảm nhanh hơn $|h|$.</div><label for="linH">Số gia h: <output id="linHOut">0.4</output></label> <input id="linH" type="range" min="-0.8" max="0.8" step="0.02" value="0.4"><svg class="p4plot" id="linPlot" viewBox="0 0 900 300" role="img" aria-label="Sai số giữa parabola và tuyến tính hóa"></svg><p class="plot-result" id="linPlotText" aria-live="polite"></p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm là vận tốc và tốc độ biến thiên</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $s(t)$ là vị trí có hướng, $$v(t)=s'(t),\qquad a(t)=s''(t).$$ Tốc độ là $|v(t)|$, không phải luôn bằng vận tốc.</div><div class="card">Ví dụ $s(t)=t^3-3t$ (m), $t$ tính bằng giây: $v(t)=3t^2-3$ (m/s), $a(t)=6t$ (m/s²). Tại $t=0{,}5$, vật có vận tốc $-2{,}25$ m/s và tốc độ $2{,}25$ m/s.</div><p>Đơn vị của đạo hàm bằng đơn vị đầu ra chia cho đơn vị đầu vào.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm một phía</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$$f'_+(a)=\lim_{h\to0^+}\frac{f(a+h)-f(a)}h,\quad f'_-(a)=\lim_{h\to0^-}\frac{f(a+h)-f(a)}h.$$</div><div class="card">Tại điểm trong miền: $f$ khả vi khi và chỉ khi hai đạo hàm một phía tồn tại hữu hạn và bằng nhau.</div><p>Tại đầu mút miền, có thể xét đạo hàm một phía. Cần ghi rõ khi chỉ đang xét một phía.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Góc gãy: liên tục nhưng không khả vi</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$f(x)=|x|$ liên tục tại 0 nhưng $$f'_+(0)=1,\qquad f'_-(0)=-1.$$ Hai hệ số góc khác nhau, nên không có đạo hàm tại 0.</div><svg class="p4plot" id="cornerPlot" viewBox="0 0 900 300" role="img" aria-label="Đồ thị trị tuyệt đối và hai tiếp tuyến một phía"></svg><p class="plot-result" id="cornerPlotText" aria-live="polite"></p><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Với $x^2-3|x|+2$, tại 0 hai đạo hàm một phía là −3 và 3. Hàm vẫn khả vi tại mọi điểm khác 0.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Khả vi suy ra liên tục</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $h\ne0$: $$f(a+h)-f(a)=\frac{f(a+h)-f(a)}h\,h.$$ Nếu $f$ khả vi tại $a$, thừa số thứ nhất tiến đến số hữu hạn $f'(a)$, còn $h\to0$.</div><div class="card">Suy ra $f(a+h)\to f(a)$: hàm liên tục tại $a$. Chiều đảo sai, như hàm $|x|$ tại 0.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Giới hạn vô cực của thương sai phân không phải đạo hàm hữu hạn. Ví dụ $\sqrt[3]x$ có tiếp tuyến đứng tại 0 nhưng không khả vi tại đó theo định nghĩa đang dùng.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm dao động vẫn có thể khả vi</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Cho $f(x)=x^2\sin(1/x)$ khi $x\ne0$, $f(0)=0$. Khi đó $$\frac{f(h)-f(0)}h=h\sin(1/h).$$</div><div class="card">Vì $|h\sin(1/h)|\le|h|\to0$, nên $f'(0)=0$. Với $x\ne0$, $f'(x)=2x\sin(1/x)-\cos(1/x)$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Đạo hàm tồn tại tại 0 nhưng không liên tục tại 0. Khả vi không đồng nghĩa hàm đạo hàm liên tục.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Quy tắc tổng, tích và thương</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><div class="table-scroll"><table><tr><td>Hai hàm u, v khả vi</td><td>Công thức</td></tr><tr><td>Tổ hợp tuyến tính</td><td>$(\alpha u+\beta v)'=\alpha u'+\beta v'$</td></tr><tr><td>Tích</td><td>$(uv)'=u' v+uv'$</td></tr><tr><td>Nghịch đảo</td><td>$(1/v)'=-v'/v^2$</td></tr><tr><td>Thương</td><td>$(u/v)'=(u' v-uv')/v^2$</td></tr></table></div></div><p>Với thương và nghịch đảo, cần v khác 0 tại điểm xét.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Vì sao quy tắc tích có hai số hạng?</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Thêm và bớt $u(a)v(a+h)$ để tách thương sai phân của $uv$: $$\frac{u(a+h)v(a+h)-u(a)v(a)}h$$ $$=\frac{u(a+h)-u(a)}h\,v(a+h)+u(a)\frac{v(a+h)-v(a)}h.$$</div><div class="card">Lấy giới hạn, dùng tính liên tục của $v$, được $(uv)'(a)=u'(a)v(a)+u(a)v'(a)$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Tích thay đổi vì cả hai thừa số đều thay đổi. Không lấy đạo hàm bằng cách nhân hai đạo hàm.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Quy tắc hàm hợp</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $u=g(x)$ và $y=f(u)$, với các đạo hàm tồn tại tại điểm tương ứng: $$\frac{dy}{dx}=f'(g(x))g'(x).$$</div><div class="card">Ví dụ $y=(x^3+x)^2$: $$y'=2(x^3+x)(3x^2+1).$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Lấy đạo hàm từ lớp ngoài vào lớp trong và nhân đủ đạo hàm của từng lớp. Công thức vẫn đúng khi đạo hàm hàm trong bằng 0.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Bảng đạo hàm: lũy thừa, mũ, logarit</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><div class="table-scroll"><table><tr><td>Hàm theo u=u(x)</td><td>Đạo hàm theo x</td></tr><tr><td>$u^\alpha$</td><td>$\alpha u^{\alpha-1}u'$</td></tr><tr><td>$e^u$</td><td>$e^u u'$</td></tr><tr><td>$a^u$ ($a&gt;0$)</td><td>$a^u\ln a\,u'$</td></tr><tr><td>$\ln|u|$ ($u\ne0$)</td><td>$u'/u$</td></tr><tr><td>$\log_a u$ ($u&gt;0$, $a&gt;0,a\ne1$)</td><td>$u'/(u\ln a)$</td></tr></table></div></div><p>Với số mũ thực bất kỳ, dùng công thức lũy thừa trên u>0; miền mở rộng tùy số mũ.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Bảng đạo hàm: lượng giác</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><div class="table-scroll"><table><tr><td>Hàm</td><td>Đạo hàm</td></tr><tr><td>$\sin u$</td><td>$\cos u\,u'$</td></tr><tr><td>$\cos u$</td><td>$-\sin u\,u'$</td></tr><tr><td>$\tan u$</td><td>$u'/\cos^2u$</td></tr><tr><td>$\cot u$</td><td>$-u'/\sin^2u$</td></tr></table></div></div><div class="card">Góc tính bằng radian. Cần cos u khác 0 cho tan và sin u khác 0 cho cot.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Ví dụ $(\sin\sqrt{x^2+1})'=\cos\sqrt{x^2+1}\cdot x/\sqrt{x^2+1}$.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm ngược và lượng giác ngược</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $f$ khả vi, đơn điệu nghiêm ngặt trên khoảng, $y=f(x)$ và $f'(x)\ne0$: $$(f^{-1})'(y)=\frac1{f'(x)}.$$</div><div class="card"><div class="table-scroll"><table><tr><td>$(\arcsin u)'$</td><td>$u'/\sqrt{1-u^2}$, $|u|&lt;1$</td></tr><tr><td>$(\arccos u)'$</td><td>$-u'/\sqrt{1-u^2}$, $|u|&lt;1$</td></tr><tr><td>$(\arctan u)'$</td><td>$u'/(1+u^2)$</td></tr></table></div></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Ý chính: từ $f(f^{-1}(y))=y$, lấy đạo hàm được $f'(x)(f^{-1})'(y)=1$.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Ví dụ: lập công thức đạo hàm arcsin</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Đặt $y=\arcsin x$, tức $x=\sin y$, $-\pi/2&lt;y&lt;\pi/2$. Khi đó $\cos y&gt;0$ và $$y'=\frac1{\cos y}=\frac1{\sqrt{1-\sin^2y}}=\frac1{\sqrt{1-x^2}}.$$</div><div class="card">Công thức cho $-1&lt;x&lt;1$. Với arctan, dùng $(\tan y)'=1+\tan^2y$ để có $y'=1/(1+x^2)$.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Lấy logarit để tính đạo hàm</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $y=u(x)^{v(x)}$, $u&gt;0$, viết $\ln y=v\ln u$. Suy ra $$y'=u^v\left(v'\ln u+v\frac{u'}u\right).$$</div><div class="card">Ví dụ $y=x^x$, $x&gt;0$: $\ln y=x\ln x$ nên $y'=x^x(\ln x+1)$.</div><p>Không dùng công thức lũy thừa với số mũ hằng khi chính số mũ còn phụ thuộc x.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm hàm ẩn</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu một nhánh khả vi $y=y(x)$ thỏa $F(x,y)=0$, lấy đạo hàm hai vế theo $x$, xem $y$ là hàm của $x$, rồi giải theo $y'$.</div><div class="card">Ví dụ $x^2+y^2=25$: $2x+2yy'=0$, nên $y'=-x/y$ khi $y\ne0$. Tại $(3,-4)$, hệ số góc bằng $3/4$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Mỗi lần đạo hàm biểu thức theo y đều có thêm y′. Khi hệ số của y′ bằng 0, phải kiểm tra riêng; không chia cho 0.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm hàm tham số</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $x=x(t)$, $y=y(t)$ và $x'(t)\ne0$: $$\frac{dy}{dx}=\frac{y'(t)}{x'(t)}.$$</div><div class="card">Ví dụ $x=t^2$, $y=t^3$, $t&gt;0$: $dy/dx=3t/2$. Tại $t=1$, điểm $(1,1)$ có tiếp tuyến $y-1=\tfrac32(x-1)$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Đạo hàm cấp hai: $\dfrac{d^2y}{dx^2}=\dfrac1{x'(t)}\dfrac d{dt}\left(\dfrac{y'(t)}{x'(t)}\right)$. Không dùng $y''(t)/x''(t)$.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hàm từng đoạn: kiểm tra điểm nối</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><ol><li>Tính giới hạn trái, phải và giá trị tại điểm nối để kiểm tra liên tục.</li><li>Nếu liên tục, tính đạo hàm một phía bằng thương sai phân.</li><li>Hai đạo hàm hữu hạn bằng nhau mới cho khả vi.</li></ol></div><div class="card">Ví dụ $f(x)=x^2$ khi $x\le1$, $f(x)=ax+b$ khi $x&gt;1$. Liên tục yêu cầu $a+b=1$; khả vi yêu cầu $a=2$. Vậy $a=2,b=-1$.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Cực trị địa phương và điểm tới hạn</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$a$ là điểm cực đại địa phương nếu $f(x)\le f(a)$ với mọi $x$ đủ gần $a$ trong miền. Cực tiểu đổi chiều bất đẳng thức.</div><div class="card">Điểm tới hạn bên trong miền: $f'(a)=0$ hoặc $f'(a)$ không tồn tại, nhưng $f(a)$ có nghĩa.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>$x^2$ cực tiểu tại 0; $|x|$ cũng cực tiểu tại 0 dù không khả vi; $x^3$ có đạo hàm 0 tại 0 nhưng không cực trị.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Định lý Fermat</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $a$ là điểm cực trị trong khoảng và $f$ khả vi tại $a$, thì $$f'(a)=0.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Ở cực đại, với $h&gt;0$ thương sai phân không dương, còn với $h&lt;0$ không âm. Vì hai phía có cùng giới hạn, giới hạn đó phải bằng 0. Cực tiểu tương tự.</p></details><div class="card">Đây là điều kiện cần, chưa phải điều kiện đủ. Điểm đầu mút và điểm không khả vi cần xét riêng.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dấu đạo hàm và chiều biến thiên</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Trên một khoảng, nếu $f'\ge0$ thì $f$ không giảm; nếu $f'\le0$ thì $f$ không tăng. Nếu $f'&gt;0$ (tương ứng $&lt;0$) khắp khoảng thì tăng (tương ứng giảm) nghiêm ngặt.</div><div class="card">Nếu $f'$ đổi dấu $+\to-$ tại $a$, có cực đại; đổi dấu $-\to+$, có cực tiểu. Nếu cùng dấu ở hai phía, không có cực trị.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Điều kiện được xét trên từng khoảng của miền xác định. Không nối hai khoảng qua một điểm ngoài miền.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Minh họa: bảng dấu và đồ thị</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$f(x)=x^3-3x$, $f'(x)=3(x-1)(x+1)$. Tăng trên $(-\infty,-1)$ và $(1,+\infty)$; giảm trên $(-1,1)$.</div><svg class="p4plot" id="extPlot" viewBox="0 0 900 300" role="img" aria-label="Đồ thị hàm bậc ba với cực đại và cực tiểu"></svg><p class="plot-result" id="extPlotText" aria-live="polite"></p><p>Cực đại tại (−1,2), cực tiểu tại (1,−2). Hai giá trị này không phải max/min trên toàn trục số.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Giá trị lớn nhất, nhỏ nhất trên đoạn</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $f$ liên tục trên đoạn hữu hạn đóng $[a,b]$, hàm đạt min và max. Cách tìm:<ol><li>Liệt kê điểm tới hạn trong $(a,b)$.</li><li>Tính giá trị tại các điểm đó và tại hai đầu mút.</li><li>So sánh tất cả giá trị.</li></ol></div><div class="card">Với $f(x)=x^3-3x$ trên $[-2,2]$: giá trị tại $-2,-1,1,2$ lần lượt là $-2,2,-2,2$. Min = −2, max = 2.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Định lý Rolle</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Giả sử $f$ liên tục trên $[a,b]$, khả vi trên $(a,b)$ và $f(a)=f(b)$. Khi đó $$\exists c\in(a,b):\quad f'(c)=0.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Hàm hằng: mọi điểm trong khoảng đều được. Nếu không hằng, có một cực trị đạt trong khoảng vì hai đầu mút có cùng giá trị. Áp dụng Fermat tại điểm đó.</p></details><div class="card">Ví dụ $f(x)=x^2-2x$ trên $[0,2]$: $f(0)=f(2)=0$, $f'(c)=2c-2=0$ cho $c=1$.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Định lý giá trị trung bình Lagrange</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $f$ liên tục trên $[a,b]$, khả vi trên $(a,b)$ thì $$\exists c\in(a,b):\quad f'(c)=\frac{f(b)-f(a)}{b-a}.$$</div><div class="card">Có một tiếp tuyến song song với cát tuyến nối hai đầu mút.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Trừ đi đường thẳng qua hai đầu mút: $g(x)=f(x)-f(a)-\dfrac{f(b)-f(a)}{b-a}(x-a)$. Khi đó $g(a)=g(b)=0$; dùng Rolle.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Lagrange qua hình vẽ</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $f(x)=x^2$ trên $[0,2]$, hệ số góc cát tuyến bằng 2. Vì $f'(c)=2c$, chọn $c=1$; tiếp tuyến tại (1,1) song song cát tuyến.</div><svg class="p4plot" id="mvtPlot" viewBox="0 0 900 300" role="img" aria-label="Tiếp tuyến song song cát tuyến trong định lý Lagrange"></svg><p class="plot-result" id="mvtPlotText" aria-live="polite"></p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Ứng dụng: vận tốc và bất đẳng thức</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><p>Đi 41 km trong 0,5 giờ cho vận tốc trung bình 82 km/h. Nếu vị trí liên tục trên đoạn thời gian và khả vi bên trong, có lúc vận tốc bằng 82 km/h.</p><p>Với mọi $a,b$: $|\sin a-\sin b|\le|a-b|$, vì Lagrange cho hiệu bằng $\cos c\,(a-b)$.</p></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Định lý cho tồn tại một thời điểm, không chỉ ra thời điểm cụ thể. Khi xét tốc độ, dùng trị tuyệt đối của vận tốc.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Hệ quả và định lý Cauchy</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $f'=0$ trên một khoảng, $f$ là hằng trên khoảng đó. Nếu $|f'|\le M$, thì $|f(b)-f(a)|\le M|b-a|$.</div><div class="card">Nếu $f,g$ liên tục trên $[a,b]$, khả vi trong $(a,b)$ và $g'\ne0$ khắp khoảng, thì $$\exists c:\quad\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(c)}{g'(c)}.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Mẫu g(b)−g(a) khác 0 do Rolle. Cauchy mở rộng Lagrange và là cơ sở của quy tắc L’Hôpital.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">L’Hôpital: kiểm tra trước khi dùng</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Xét giới hạn một phía tại $a$ (hoặc tại vô cực). Giả sử $f,g$ khả vi trên khoảng đang xét, $g'\ne0$ và thương có dạng $0/0$ hoặc $\infty/\infty$. Nếu $\lim f'/g'=L$ tồn tại hữu hạn hoặc vô cực, thì $$\lim\frac fg=L.$$</div><div class="card">Các điều kiện phải đúng gần điểm xét. Giới hạn hai phía được kiểm tra từ cả hai phía. Có thể lặp lại nếu mỗi lần vẫn đủ điều kiện.</div><p>Đây là thương hai đạo hàm, không phải đạo hàm của thương.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">L’Hôpital: ví dụ 0/0 và ∞/∞</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><p>$\displaystyle\lim_{x\to0}\frac{e^x-1}{x}=\lim_{x\to0}\frac{e^x}{1}=1$.</p><p>$\displaystyle\lim_{x\to+\infty}\frac{\ln x}{x}=\lim_{x\to+\infty}\frac{1/x}{1}=0$.</p></div><div class="card">Ví dụ cần hai lần: $$\lim_{x\to0}\frac{e^x-1-x}{x^2}=\lim\frac{e^x-1}{2x}=\lim\frac{e^x}{2}=\frac12.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Mỗi dấu bằng cần nhận dạng vô định và kiểm tra mẫu đạo hàm không bằng 0 trên lân cận thủng thích hợp.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đổi dạng tích và hiệu vô định</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><p>$0\cdot\infty$: đổi sang thương. Ví dụ $$\lim_{x\to0^+}x\ln x=\lim\frac{\ln x}{1/x}=\lim\frac{1/x}{-1/x^2}=\lim(-x)=0.$$</p></div><div class="card">$\infty-\infty$: quy đồng hoặc liên hợp trước. Ví dụ $\sqrt{x^2+x}-x=1/(\sqrt{1+1/x}+1)\to1/2$ khi $x\to+\infty$.</div><p>Ưu tiên biến đổi đơn giản nếu đã khử được dạng vô định.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đổi dạng lũy thừa vô định</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Với $y=u^v$, $u&gt;0$, xét $\ln y=v\ln u$. Nếu biểu thức logarit tiến đến $L$, thì $y\to e^L$.</div><div class="card">Ví dụ $$\lim_{x\to0}(1+x)^{1/x}=\exp\left(\lim_{x\to0}\frac{\ln(1+x)}x\right)=e.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Các dạng $1^\infty$, $0^0$, $\infty^0$ cần phân tích qua logarit. Điều kiện cơ số dương phải đúng gần điểm xét.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Khi nào không được dùng L’Hôpital?</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><ol><li>$\lim_{x\to0}(x+1)/(x+2)=1/2$: không có dạng vô định.</li><li>$\lim_{x\to0}x/\sin x=1$: đã biết từ giới hạn cơ bản; không cần đạo hàm.</li><li>Nếu $\lim f'/g'$ không tồn tại, quy tắc chưa cho kết luận về $\lim f/g$.</li></ol></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Ví dụ tại $+\infty$: $f(x)=x+\sin x$, $g(x)=x$. Thương ban đầu tiến về 1 nhưng thương đạo hàm $1+\cos x$ không có giới hạn.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đạo hàm cấp cao</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$$f''=(f')',\qquad f^{(n)}=(f^{(n-1)})'.$$ Ký hiệu $f^{(n)}$ là đạo hàm cấp n, khác lũy thừa $(f)^n$.</div><div class="card">Với $s(t)=t^3-3t$: $s'=3t^2-3$, $s''=6t$, $s^{(3)}=6$, $s^{(4)}=0$.</div><p>Nên tính vài cấp đầu, nhận quy luật rồi chứng minh bằng quy nạp khi bài yêu cầu công thức tổng quát.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Các công thức đạo hàm cấp n</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><div class="table-scroll"><table><tr><td>Hàm</td><td>Đạo hàm cấp n (n≥1)</td></tr><tr><td>$e^{ax}$</td><td>$a^ne^{ax}$</td></tr><tr><td>$\sin x$</td><td>$\sin(x+n\pi/2)$</td></tr><tr><td>$\cos x$</td><td>$\cos(x+n\pi/2)$</td></tr><tr><td>$1/(x+b)$</td><td>$(-1)^n n!/(x+b)^{n+1}$</td></tr><tr><td>$\ln x$ ($x&gt;0$)</td><td>$(-1)^{n-1}(n-1)!/x^n$</td></tr></table></div></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Với $x^m$, $m$ nguyên không âm: đạo hàm cấp $n\le m$ là $m!x^{m-n}/(m-n)!$; cấp $n&gt;m$ bằng 0.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Leibniz: đạo hàm cấp cao của tích</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $u,v$ có đạo hàm đến cấp n: $$(uv)^{(n)}=\sum_{k=0}^n\binom nk u^{(k)}v^{(n-k)}.$$ Quy ước $u^{(0)}=u$.</div><div class="card">Ví dụ với $u=x$, $v=e^x$, chỉ k=0,1 còn lại: $$(xe^x)^{(n)}=xe^x+ne^x=(x+n)e^x.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Ý chính chứng minh: lấy đạo hàm công thức cấp n và ghép các hệ số bằng công thức Pascal để được cấp n+1.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Taylor: từ tiếp tuyến đến đa thức</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Đa thức Taylor bậc n tại a: $$T_n(x)=\sum_{k=0}^n\frac{f^{(k)}(a)}{k!}(x-a)^k.$$ Khi a=0, gọi là đa thức Maclaurin.</div><div class="card">$T_n$ khớp giá trị và các đạo hàm đến cấp n của $f$ tại a. Đặt $R_n=f-T_n$ để theo dõi phần sai số.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Tuyến tính hóa chính là T₁. T₂ còn khớp độ cong qua đạo hàm cấp hai.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Taylor với phần dư Peano</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu f có đạo hàm đến cấp n−1 gần a và có đạo hàm cấp n tại a (n≥1), thì $$f(x)=T_n(x)+o((x-a)^n),\quad x\to a.$$</div><div class="card">$$\frac{o((x-a)^n)}{(x-a)^n}\to0.$$ Dạng này hữu ích cho giới hạn và nhận hệ số, nhưng tự nó không cho một con số chặn sai số tại x cụ thể.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Các hệ số là duy nhất: hiệu hai đa thức khác nhau không thể nhỏ hơn mọi số hạng đến đúng bậc của nó.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Taylor với phần dư Lagrange</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu f có đạo hàm đến cấp n+1 trên một khoảng mở chứa đoạn nối a và x, thì có $\xi$ nằm giữa a và x sao cho $$f(x)=T_n(x)+\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}.$$</div><div class="card">Nếu $|f^{(n+1)}(t)|\le M$ trên đoạn đó: $$|R_n(x)|\le\frac{M|x-a|^{n+1}}{(n+1)!}.$$</div><p>Điểm ξ thường không biết cụ thể; cần chặn đạo hàm trên cả đoạn.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">So sánh các bậc xấp xỉ của eˣ</h2><span class="slide-category">Minh họa tương tác</span></div><div class="card">$T_1=1+x$, $T_2=1+x+x^2/2$, $T_3=1+x+x^2/2+x^3/6$. Chọn bậc và vị trí x để so sánh với $e^x$.</div><label for="tayN">Bậc n: <output id="tayNOut">3</output></label> <input id="tayN" type="range" min="1" max="6" step="1" value="3"><label for="tayX">Vị trí x: <output id="tayXOut">0.5</output></label> <input id="tayX" type="range" min="-1" max="1" step="0.05" value="0.5"><svg class="p4plot" id="tayPlot" viewBox="0 0 900 300" role="img" aria-label="Đồ thị hàm mũ và đa thức Maclaurin"></svg><p class="plot-result" id="tayPlotText" aria-live="polite"></p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Maclaurin cơ bản: mũ và logarit</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Khi $x\to0$: $$e^x=1+x+\frac{x^2}{2!}+\cdots+\frac{x^n}{n!}+o(x^n).$$ $$\ln(1+x)=x-\frac{x^2}2+\cdots+(-1)^{n-1}\frac{x^n}n+o(x^n).$$</div><div class="card">Để lấy giới hạn đến bậc 3: $e^x=1+x+x^2/2+x^3/6+o(x^3)$, $\ln(1+x)=x-x^2/2+x^3/3+o(x^3)$.</div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Maclaurin cơ bản: lượng giác</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Khi $x\to0$: $$\sin x=x-\frac{x^3}{3!}+\frac{x^5}{5!}+o(x^5),$$ $$\cos x=1-\frac{x^2}{2!}+\frac{x^4}{4!}+o(x^4),$$ $$\arctan x=x-\frac{x^3}3+\frac{x^5}5+o(x^5).$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Sin và arctan chỉ có các bậc lẻ; cos chỉ có các bậc chẵn. Khi cần phần dư tốt hơn, khai triển thêm một bậc và dùng hệ số bằng 0.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Maclaurin cơ bản: lũy thừa</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Khi $x\to0$, với $\alpha$ thực: $$(1+x)^\alpha=1+\alpha x+\frac{\alpha(\alpha-1)}{2!}x^2+\cdots+\frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}x^n+o(x^n).$$</div><div class="card"><p>$\sqrt{1+x}=1+x/2-x^2/8+o(x^2)$.</p><p>$1/(1-x)=1+x+x^2+\cdots+x^n+o(x^n)$.</p></div><p>Đây là khai triển địa phương quanh 0; với số mũ thực, xét 1+x>0.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Bổ sung: sinh và cosh</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">$\sinh x=(e^x-e^{-x})/2$, $\cosh x=(e^x+e^{-x})/2$. Khi $x\to0$: $$\sinh x=x+\frac{x^3}{3!}+\frac{x^5}{5!}+o(x^5),$$ $$\cosh x=1+\frac{x^2}{2!}+\frac{x^4}{4!}+o(x^4).$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Lấy hiệu hoặc tổng khai triển của eˣ và e⁻ˣ: các bậc chẵn hoặc lẻ triệt tiêu.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đa thức Taylor và chuỗi Taylor</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Chuỗi Taylor hình thức: $$\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k.$$ Để chuỗi bằng f(x), cần $R_n(x)\to0$ khi $n\to\infty$ tại x đang xét.</div><div class="card">Phần này ưu tiên đa thức hữu hạn và phần dư. Hội tụ của chuỗi sẽ được nghiên cứu kỹ ở chuyên đề chuỗi.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Việc có đạo hàm mọi cấp không tự động bảo đảm hàm bằng tổng chuỗi Taylor của nó.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Dùng Taylor tính giới hạn</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Tính $\displaystyle\lim_{x\to0}(\tan x-\sin x)/x^3$. Ta có $$\tan x=x+\frac{x^3}3+o(x^3),\quad\sin x=x-\frac{x^3}6+o(x^3).$$</div><div class="card">Suy ra $\tan x-\sin x=x^3/2+o(x^3)$; chia cho $x^3$ được giới hạn $1/2$.</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Chọn bậc đủ cao để còn số hạng đầu tiên sau triệt tiêu. Chỉ dùng sin x≈x và tan x≈x là chưa đủ.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Khai triển hàm hợp: giữ đúng bậc</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Ví dụ $f(x)=e^{2x-x^2}$. Đặt $u=2x-x^2=O(x)$ và dùng $e^u=1+u+u^2/2+u^3/6+o(u^3)$.</div><div class="card">Giữ các số hạng đến bậc 3: $$f(x)=1+(2x-x^2)+(2x^2-2x^3)+\frac43x^3+o(x^3)$$ $$=1+2x+x^2-\frac23x^3+o(x^3).$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Vì |u|≤C|x| gần 0, phần dư o(u³) cũng là o(x³). Các số hạng bậc ≥4 có thể gom vào o(x³).</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Đọc đạo hàm cấp cao từ hệ số</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Nếu $f(x)=c_0+c_1x+\cdots+c_nx^n+o(x^n)$ là khai triển Maclaurin của f, thì $$f^{(k)}(0)=k!c_k\quad(0\le k\le n).$$</div><div class="card">Ví dụ $e^{2x-x^2}=1+2x+x^2-2x^3/3+o(x^3)$ cho $f^{(3)}(0)=3!(-2/3)=-4$.</div><p>Cần biết hàm đủ khả vi để đồng nhất với đa thức Taylor. Không lấy đạo hàm của ký hiệu o một cách hình thức.</p></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Xấp xỉ có bảo đảm sai số</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card">Ước lượng $e^{0{,}1}$ bằng $T_3$: $$T_3(0{,}1)=1+0{,}1+0{,}005+\frac{0{,}001}6=1{,}105166\ldots$$</div><div class="card">Trên $[0,0{,}1]$, $|f^{(4)}(t)|=e^t&lt;3$. Vì vậy $$|R_3(0{,}1)|\le\frac{3(0{,}1)^4}{4!}=1{,}25\cdot10^{-5}.$$</div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>Chặn M=3 khá rộng nhưng dễ chứng minh và vẫn cho sai số bảo đảm. Nếu làm tròn đa thức, cần tính thêm sai số làm tròn.</p></details></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Chọn phương pháp theo yêu cầu</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><div class="table-scroll"><table><tr><td>Yêu cầu</td><td>Công cụ</td></tr><tr><td>Đạo hàm tại điểm nối</td><td>Liên tục → thương sai phân một phía</td></tr><tr><td>Tính đạo hàm biểu thức</td><td>Miền → quy tắc tích/thương/hợp</td></tr><tr><td>Tiếp tuyến, xấp xỉ</td><td>f(a), f′(a) → tuyến tính hóa</td></tr><tr><td>Cực trị, min/max</td><td>Điểm tới hạn → bảng dấu/so sánh</td></tr><tr><td>Tồn tại điểm, bất đẳng thức</td><td>Rolle/Lagrange/Cauchy và giả thiết</td></tr><tr><td>Giới hạn vô định</td><td>Biến đổi → L’Hôpital hoặc Taylor</td></tr><tr><td>Độ chính xác cho trước</td><td>Taylor và chặn phần dư</td></tr></table></div></div></div>
+<div class="slide"><div class="slide-header"><h2 class="slide-title">Tự kiểm tra cuối chuyên đề</h2><span class="slide-category">Đạo hàm và ứng dụng</span></div><div class="card"><ol><li>Tính đạo hàm $\ln(1+x^2)$.</li><li>Viết tiếp tuyến của $e^x$ tại 0.</li><li>Tính $\lim_{x\to0}(\sin x-x)/x^3$.</li><li>Vì sao $f'(a)=0$ chưa đủ để kết luận cực trị?</li></ol></div><details class="v2-reveal"><summary>Ý chính · Xem giải thích</summary><p>1) $2x/(1+x^2)$. 2) $y=1+x$. 3) $-1/6$. 4) Hàm $x^3$ tại 0 là phản ví dụ.</p></details><div class="card"><a href="baitap.html">Mở bài tập theo dạng →</a> · <a href="index.html">Về giới thiệu chuyên đề</a></div></div></div><div class="nav-bar"><a class="home-link" href="index.html" aria-label="Về giới thiệu chuyên đề">Chuyên đề</a><button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Trang trước</button><div class="slide-counter"><label for="slideSelect">Đến trang </label><select id="slideSelect"></select> <span id="slideCounter" aria-live="polite"></span></div><button class="nav-btn" id="fullscreenBtn" type="button" aria-pressed="false" title="Toàn màn hình (F)">⛶ Toàn màn hình</button><button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Trang sau ❯</button></div>
+    <div id="screenStatus" class="screen-status" role="status" aria-live="polite"></div><script>
+        let currentSlide = 0;
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideSelect = document.getElementById('slideSelect');
+        slides.forEach((slide, i) => {
+            const option = document.createElement('option'); option.value = i;
+            option.textContent = `${i+1}. ${slide.querySelector('h2.slide-title, h1').textContent.trim()}`;
+            slideSelect.appendChild(option);
+        });
+        function updateSlide() {
+            slides.forEach((slide, i) => { slide.classList.toggle('active', i === currentSlide); slide.setAttribute('aria-hidden', String(i !== currentSlide)); });
+            slides[currentSlide].scrollTop = 0;
+            progressBar.style.width = ((currentSlide+1)/totalSlides*100)+'%';
+            slideCounter.textContent = `${currentSlide+1} / ${totalSlides}`;
+            slideSelect.value = currentSlide;
+            prevBtn.disabled = currentSlide === 0; nextBtn.disabled = currentSlide === totalSlides-1;
+            if (typeof window.MathJax?.typesetPromise === 'function') {
+                window.MathJax.typesetPromise([slides[currentSlide]]).catch(console.error);
+            }
+        }
+        function changeSlide(direction) { currentSlide = Math.max(0, Math.min(totalSlides-1, currentSlide+direction)); updateSlide(); }
+        slideSelect.addEventListener('change', () => { currentSlide = Number(slideSelect.value); updateSlide(); });
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const screenStatus = document.getElementById('screenStatus');
+        let fullscreenBusy = false;
+        let screenNoticeTimer;
+        function nativeFullscreenElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+        function syncFullscreen() {
+            const native = Boolean(nativeFullscreenElement());
+            if (native) document.body.classList.remove('presentation-mode');
+            const expanded = document.body.classList.contains('presentation-mode');
+            fullscreenBtn.textContent = native ? '⛶ Thoát toàn màn hình' : expanded ? '↙ Thu gọn' : '⛶ Toàn màn hình';
+            fullscreenBtn.setAttribute('aria-pressed', String(native || expanded));
+        }
+        function usePresentationMode() {
+            document.body.classList.add('presentation-mode');
+            screenStatus.textContent = 'Đã mở rộng vùng trình chiếu. Trình duyệt này không cho phép toàn màn hình; thanh địa chỉ có thể vẫn hiện.';
+            clearTimeout(screenNoticeTimer);
+            screenNoticeTimer = setTimeout(() => { screenStatus.textContent = ''; }, 6000);
+        }
+        async function toggleFullscreen() {
+            if (fullscreenBusy) return;
+            fullscreenBusy = true;
+            clearTimeout(screenNoticeTimer);
+            screenStatus.textContent = '';
+            try {
+                if (nativeFullscreenElement()) {
+                    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+                    if (exit) await exit.call(document);
+                } else if (document.body.classList.contains('presentation-mode')) {
+                    document.body.classList.remove('presentation-mode');
+                } else {
+                    const el = document.documentElement;
+                    const request = el.requestFullscreen || el.webkitRequestFullscreen;
+                    const enabled = el.requestFullscreen ? document.fullscreenEnabled : document.webkitFullscreenEnabled;
+                    if (request && enabled !== false) {
+                        try { await request.call(el); } catch (_) { usePresentationMode(); }
+                    } else usePresentationMode();
+                }
+            } catch (_) {
+                screenStatus.textContent = 'Hãy dùng nút thoát toàn màn hình của trình duyệt.';
+            } finally {
+                fullscreenBusy = false;
+                syncFullscreen();
+            }
+        }
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', syncFullscreen);
+        document.addEventListener('webkitfullscreenchange', syncFullscreen);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.body.classList.contains('presentation-mode')) {
+                document.body.classList.remove('presentation-mode');
+                screenStatus.textContent = '';
+                syncFullscreen();
+            }
+        });
+        document.addEventListener('keydown', e => {
+            if (e.altKey || e.ctrlKey || e.metaKey || e.target.closest('select, input, textarea, [contenteditable="true"]')) return;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+            else if (e.key === 'Home') { e.preventDefault(); currentSlide = 0; updateSlide(); }
+            else if (e.key === 'End') { e.preventDefault(); currentSlide = totalSlides - 1; updateSlide(); }
+            else if (e.key.toLowerCase() === 'f' && !e.repeat) { e.preventDefault(); toggleFullscreen(); }
+            else if (e.code === 'Space' && !e.target.closest('button, a')) { e.preventDefault(); changeSlide(e.shiftKey ? -1 : 1); }
+        });
+        syncFullscreen();
+
+        updateSlide();
+
+
+function frame(x0,x1,y0,y1){const X=x=>65+(x-x0)*760/(x1-x0),Y=y=>260-(y-y0)*225/(y1-y0);let svg='<rect width="900" height="300" fill="white"/>';for(let x=Math.ceil(x0);x<=x1;x++){svg+=`<path d="M${X(x)} 30V260" stroke="#e2e8f0"/><text x="${X(x)}" y="288" text-anchor="middle">${x}</text>`;}for(let y=Math.ceil(y0);y<=y1;y++){svg+=`<path d="M65 ${Y(y)}H825" stroke="#e2e8f0"/><text x="52" y="${Y(y)+6}" text-anchor="end">${y}</text>`;}if(y0<=0&&y1>=0)svg+=`<path d="M65 ${Y(0)}H825" stroke="#64748b"/>`;if(x0<=0&&x1>=0)svg+=`<path d="M${X(0)} 30V260" stroke="#64748b"/>`;const line=(f,color='#2563eb',dash='',lo=x0,hi=x1)=>{let pts=[];for(let i=0;i<=240;i++){let x=lo+(hi-lo)*i/240,y=f(x);if(y>=y0&&y<=y1)pts.push(`${X(x)},${Y(y)}`);}return `<polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="3" stroke-dasharray="${dash}"/>`;};const dot=(x,y,color)=>`<circle cx="${X(x)}" cy="${Y(y)}" r="6" fill="${color}"/>`;return {X,Y,svg,line,dot};}
+function secant(){const h=+document.getElementById('secH').value,m=2+h,g=frame(0,2,0,4);document.getElementById('secHOut').value=h.toFixed(2);document.getElementById('secPlot').innerHTML=g.svg+g.line(x=>x*x)+g.line(x=>2*x-1,'#15803d','7 5')+g.line(x=>1+m*(x-1),'#d97706')+g.dot(1,1,'#15803d')+g.dot(1+h,(1+h)**2,'#d97706');document.getElementById('secPlotText').textContent=h===0?'h = 0: Q trùng P; thương sai phân không xác định. Đường xanh lá là tiếp tuyến, hệ số góc 2.':`h = ${h.toFixed(2)}; hệ số góc cát tuyến = ${m.toFixed(2)}. Xanh dương: đồ thị; cam: cát tuyến; xanh lá nét đứt: tiếp tuyến.`;}
+function linear(){const h=+document.getElementById('linH').value,g=frame(0,2,-1,4),x=1+h;document.getElementById('linHOut').value=h.toFixed(2);document.getElementById('linPlot').innerHTML=g.svg+g.line(x=>x*x)+g.line(x=>2*x-1,'#15803d','7 5')+`<path d="M${g.X(x)} ${g.Y(x*x)}V${g.Y(2*x-1)}" stroke="#dc2626" stroke-width="5"/>`+g.dot(x,x*x,'#2563eb')+g.dot(x,2*x-1,'#15803d');document.getElementById('linPlotText').textContent=`x = ${x.toFixed(2)}; f(x) = ${(x*x).toFixed(4)}; L(x) = ${(2*x-1).toFixed(4)}. Độ dài vạch đỏ (sai số) = ${(h*h).toFixed(4)}.`;}
+function staticPlots(){let g=frame(-2,2,-1,3);document.getElementById('cornerPlot').innerHTML=g.svg+g.line(Math.abs)+g.line(x=>-x,'#dc2626','7 5',-2,0)+g.line(x=>x,'#15803d','7 5',0,2)+g.dot(0,0,'#0f172a');document.getElementById('cornerPlotText').textContent='Nhánh trái có hệ số góc −1; nhánh phải có hệ số góc 1. Hai tiếp tuyến một phía khác nhau.';g=frame(-2,2,-3,3);document.getElementById('extPlot').innerHTML=g.svg+g.line(x=>x*x*x-3*x)+g.dot(-1,2,'#dc2626')+g.dot(1,-2,'#15803d');document.getElementById('extPlotText').textContent='Điểm đỏ: cực đại (−1,2). Điểm xanh lá: cực tiểu (1,−2).';g=frame(0,2,-1,4);document.getElementById('mvtPlot').innerHTML=g.svg+g.line(x=>x*x)+g.line(x=>2*x,'#d97706')+g.line(x=>2*x-1,'#15803d','7 5')+g.dot(1,1,'#15803d');document.getElementById('mvtPlotText').textContent='Cam: cát tuyến y=2x. Xanh lá nét đứt: tiếp tuyến y=2x−1. Cả hai có hệ số góc 2.';}
+function taylor(){const n=+document.getElementById('tayN').value,x=+document.getElementById('tayX').value;const T=t=>{let term=1,sum=1;for(let k=1;k<=n;k++){term*=t/k;sum+=term;}return sum;};let fac=1;for(let k=2;k<=n+1;k++)fac*=k;const err=Math.abs(Math.exp(x)-T(x)),bound=Math.exp(Math.max(0,x))*Math.abs(x)**(n+1)/fac,g=frame(-1,1,0,3);document.getElementById('tayNOut').value=n;document.getElementById('tayXOut').value=x.toFixed(2);document.getElementById('tayPlot').innerHTML=g.svg+g.line(Math.exp)+g.line(T,'#d97706','7 5')+g.dot(x,Math.exp(x),'#2563eb')+g.dot(x,T(x),'#d97706');document.getElementById('tayPlotText').textContent=`Xanh dương: eˣ; cam: T${n}. T${n}(${x.toFixed(2)}) ≈ ${T(x).toFixed(6)}; sai số quan sát ≈ ${err.toExponential(2)}; chặn Lagrange ≈ ${bound.toExponential(2)}. Các số hiển thị đã làm tròn.`;}
+for(const [id,fn] of [['secH',secant],['linH',linear],['tayN',taylor],['tayX',taylor]])document.getElementById(id).addEventListener('input',fn);
+secant();linear();staticPlots();taylor();
+document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>{if(d.open&&typeof window.MathJax?.typesetPromise==='function')MathJax.typesetPromise([d]).catch(console.error);}));
+</script></body></html>
